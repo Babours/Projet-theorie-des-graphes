@@ -5,6 +5,7 @@
 
 int main()
 {
+    int w(0);
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
 
