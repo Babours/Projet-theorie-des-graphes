@@ -1,0 +1,56 @@
+# depslib dependency file v1.0
+1522652953 source:c:\informatique\info\new\graph_lib_exemple_graph\graph.cpp
+	"graph.h"
+
+1522652489 c:\informatique\info\new\graph_lib_exemple_graph\graph.h
+	<vector>
+	<map>
+	<string>
+	<memory>
+	"grman/grman.h"
+
+1522535441 c:\informatique\info\new\graph_lib_exemple_graph\grman\grman.h
+	<allegro.h>
+	<string>
+	"grman_couleurs.h"
+	"coords.h"
+	"widget.h"
+
+1509218772 c:\informatique\info\new\graph_lib_exemple_graph\grman\grman_couleurs.h
+
+1522571824 c:\informatique\info\new\graph_lib_exemple_graph\grman\coords.h
+	<cmath>
+
+1522633016 c:\informatique\info\new\graph_lib_exemple_graph\grman\widget.h
+	"grman.h"
+	<iostream>
+	<string>
+	<vector>
+	<algorithm>
+	<allegro.h>
+
+1522571469 source:c:\informatique\info\new\graph_lib_exemple_graph\grman\coords.cpp
+	"coords.h"
+
+1522512223 source:c:\informatique\info\new\graph_lib_exemple_graph\grman\grman.cpp
+	<cmath>
+	<unordered_map>
+	<unordered_set>
+	<utility>
+	<string>
+	<iostream>
+	<regex>
+	"grman.h"
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+
+1522633319 source:c:\informatique\info\new\graph_lib_exemple_graph\grman\widget.cpp
+	"widget.h"
+
+1522653475 source:c:\informatique\info\new\graph_lib_exemple_graph\main.cpp
+	"grman/grman.h"
+	<iostream>
+	"graph.h"
+
