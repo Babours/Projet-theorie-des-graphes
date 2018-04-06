@@ -5,6 +5,7 @@
 
 int main()
 {
+    //JE OJIHGOISRTGBHETYv uit'(t'yut'('y('
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
 
@@ -32,5 +33,6 @@ int main()
     return 0;
 }
 END_OF_MAIN();
+// yctvbuino,l; tvybunio,;p cvybuni,o
 
 
