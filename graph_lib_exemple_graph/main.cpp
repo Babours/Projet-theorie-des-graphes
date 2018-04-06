@@ -5,6 +5,7 @@
 
 int main()
 {
+    //JE OJIHGOISRTGBHETY
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
 
