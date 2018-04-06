@@ -126,3 +126,75 @@
 
 1523036125 c:\users\danush\documents\ece\c++\theorie des graphes\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\menu.h
 
+1523039458 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\coords.cpp
+	"coords.h"
+
+1523039458 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\coords.h
+	<cmath>
+
+1523039458 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\grman.cpp
+	<cmath>
+	<unordered_map>
+	<unordered_set>
+	<utility>
+	<string>
+	<iostream>
+	<regex>
+	"grman.h"
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+
+1523039458 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\grman.h
+	<allegro.h>
+	<string>
+	"grman_couleurs.h"
+	"coords.h"
+	"widget.h"
+
+1523039458 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\grman_couleurs.h
+
+1523039458 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\widget.h
+	"grman.h"
+	<iostream>
+	<string>
+	<vector>
+	<algorithm>
+	<allegro.h>
+
+1523039458 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\grman\widget.cpp
+	"widget.h"
+
+1523039458 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\main.cpp
+	"grman/grman.h"
+	<iostream>
+	<string>
+	"graph.h"
+	"menu.h"
+
+1523040042 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\graph.h
+	<vector>
+	<map>
+	<string>
+	<memory>
+	"grman/grman.h"
+
+1523039458 c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\menu.h
+
+1523039458 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\menu.cpp
+	<allegro.h>
+	<stdio.h>
+	<stdlib.h>
+	"graph.h"
+	"menu.h"
+
+1523040153 source:c:\users\paulf\desktop\piscine\projet-theorie-des-graphes\graph_lib_exemple_graph\graph.cpp
+	"graph.h"
+	<iostream>
+	<fstream>
+	<map>
+	<string>
+	<memory>
+	<queue>
+

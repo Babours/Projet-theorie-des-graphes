@@ -1,13 +1,13 @@
 8
 10
-0 196 96 boa.jpg 3
-0 396 96 bonobo.jpg 2
-0 196 296 hippopotame.jpg 5
-0 396 296 goeland.png 2
-0 596 296 gazelle.jpg 2
-0 96 496 leopard.jpg 1
-0 296 496 fou_de_bassan.jpg 1
-0 496 496 cormoran.jpg 3
+0 194 94 boa.jpg 3
+0 394 94 bonobo.jpg 2
+0 194 294 hippopotame.jpg 5
+0 394 294 goeland.png 2
+0 594 294 gazelle.jpg 2
+0 94 494 leopard.jpg 1
+0 294 494 fou_de_bassan.jpg 1
+0 494 494 cormoran.jpg 3
 1 2 1
 0 1 3
 1 3 1

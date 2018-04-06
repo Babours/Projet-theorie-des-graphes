@@ -124,6 +124,8 @@ class VertexInterface
         //Un bouton pour supprimer une arete
         grman::WidgetButton m_supp_edge;
 
+
+
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -288,6 +290,168 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        /// un bouton pour créer un sommet
+        grman::WidgetButton m_add_vertex;
+
+        /// bouton abeille
+        grman::WidgetButton m_bouton_abeille;
+        grman::WidgetImage m_bouton_abeille_image;
+        grman::WidgetText m_abeille;
+
+        /// bouton aigle_royal
+        grman::WidgetButton m_bouton_aigle_royal;
+        grman::WidgetImage m_bouton_aigle_royal_image;
+        grman::WidgetText m_aigle_royal;
+
+        /// bouton boa
+        grman::WidgetButton m_bouton_boa;
+        grman::WidgetImage m_bouton_boa_image;
+        grman::WidgetText m_boa;
+
+        /// bouton bonobo
+        grman::WidgetButton m_bouton_bonobo;
+        grman::WidgetImage m_bouton_bonobo_image;
+        grman::WidgetText m_bonobo;
+
+        /// bouton cerisier
+        grman::WidgetButton m_bouton_cerisier;
+        grman::WidgetImage m_bouton_cerisier_image;
+        grman::WidgetText m_cerisier;
+
+        /// bouton cocotier
+        grman::WidgetButton m_bouton_cocotier;
+        grman::WidgetImage m_bouton_cocotier_image;
+        grman::WidgetText m_cocotier;
+
+        /// bouton cormoran
+        grman::WidgetButton m_bouton_cormoran;
+        grman::WidgetImage m_bouton_cormoran_image;
+        grman::WidgetText m_cormoran;
+
+        /// bouton crevette
+        grman::WidgetButton m_bouton_crevette;
+        grman::WidgetImage m_bouton_crevette_image;
+        grman::WidgetText m_crevette;
+
+        /// bouton crocodile
+        grman::WidgetButton m_bouton_crocodile;
+        grman::WidgetImage m_bouton_crocodile_image;
+        grman::WidgetText m_crocodile;
+
+        /// bouton dauphin
+        grman::WidgetButton m_bouton_dauphin;
+        grman::WidgetImage m_bouton_dauphin_image;
+        grman::WidgetText m_dauphin;
+
+        /// bouton dorade
+        grman::WidgetButton m_bouton_dorade;
+        grman::WidgetImage m_bouton_dorade_image;
+        grman::WidgetText m_dorade;
+
+        /// bouton fissurelle
+        grman::WidgetButton m_bouton_fissurelle;
+        grman::WidgetImage m_bouton_fissurelle_image;
+        grman::WidgetText m_fissurelle;
+
+        /// bouton flamand_rose
+        grman::WidgetButton m_bouton_flamand_rose;
+        grman::WidgetImage m_bouton_flamand_rose_image;
+        grman::WidgetText m_flamand_rose;
+
+        /// bouton fou_de_bassan
+        grman::WidgetButton m_bouton_fou_de_bassan;
+        grman::WidgetImage m_bouton_fou_de_bassan_image;
+        grman::WidgetText m_fou_de_bassan;
+
+        /// bouton fourmie
+        grman::WidgetButton m_bouton_fourmie;
+        grman::WidgetImage m_bouton_fourmie_image;
+        grman::WidgetText m_fourmie;
+
+        /// bouton frelon
+        grman::WidgetButton m_bouton_frelon;
+        grman::WidgetImage m_bouton_frelon_image;
+        grman::WidgetText m_frelon;
+
+        /// bouton gazelle
+        grman::WidgetButton m_bouton_gazelle;
+        grman::WidgetImage m_bouton_gazelle_image;
+        grman::WidgetText m_gazelle;
+
+        /// bouton goeland_argente
+        grman::WidgetButton m_bouton_goeland_argente;
+        grman::WidgetImage m_bouton_goeland_argente_image;
+        grman::WidgetText m_goeland_argente;
+
+        /// bouton hippopotame
+        grman::WidgetButton m_bouton_hippopotame;
+        grman::WidgetImage m_bouton_hippopotame_image;
+        grman::WidgetText m_hippopotame;
+
+        /// bouton lapin
+        grman::WidgetButton m_bouton_lapin;
+        grman::WidgetImage m_bouton_lapin_image;
+        grman::WidgetText m_lapin;
+
+        /// bouton leopard
+        grman::WidgetButton m_bouton_leopard;
+        grman::WidgetImage m_bouton_leopard_image;
+        grman::WidgetText m_leopard;
+
+        /// bouton lion
+        grman::WidgetButton m_bouton_lion;
+        grman::WidgetImage m_bouton_lion_image;
+        grman::WidgetText m_lion;
+
+        /// bouton maquereau
+        grman::WidgetButton m_bouton_maquereau;
+        grman::WidgetImage m_bouton_maquereau_image;
+        grman::WidgetText m_maquereau;
+
+        /// bouton mulot
+        grman::WidgetButton m_bouton_mulot;
+        grman::WidgetImage m_bouton_mulot_image;
+        grman::WidgetText m_mulot;
+
+        /// bouton ormeau
+        grman::WidgetButton m_bouton_ormeau;
+        grman::WidgetImage m_bouton_ormeau_image;
+        grman::WidgetText m_ormeau;
+
+        /// bouton ours
+        grman::WidgetButton m_bouton_ours;
+        grman::WidgetImage m_bouton_ours_image;
+        grman::WidgetText m_ours;
+
+        /// bouton pissenlit
+        grman::WidgetButton m_bouton_pissenlit;
+        grman::WidgetImage m_bouton_pissenlit_image;
+        grman::WidgetText m_pissenlit;
+
+        /// bouton poule
+        grman::WidgetButton m_bouton_poule;
+        grman::WidgetImage m_bouton_poule_image;
+        grman::WidgetText m_poule;
+
+        /// bouton renard
+        grman::WidgetButton m_bouton_renard;
+        grman::WidgetImage m_bouton_renard_image;
+        grman::WidgetText m_renard;
+
+        /// bouton saumon
+        grman::WidgetButton m_bouton_saumon;
+        grman::WidgetImage m_bouton_saumon_image;
+        grman::WidgetText m_saumon;
+
+        /// bouton tilleul
+        grman::WidgetButton m_bouton_tilleul;
+        grman::WidgetImage m_bouton_tilleul_image;
+        grman::WidgetText m_tilleul;
+
+        /// bouton vipere
+        grman::WidgetButton m_bouton_vipere;
+        grman::WidgetImage m_bouton_vipere_image;
+        grman::WidgetText m_vipere;
 
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
@@ -324,6 +488,7 @@ class Graph
 
         void add_interfaced_vertex(int idx, double value, int x, int y, int repro, std::string pic_name="", int pic_idx=0);
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        void test_add_vertex(std::string image);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
         /// Voir implémentation dans le .cpp
