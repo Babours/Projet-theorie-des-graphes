@@ -176,13 +176,11 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 /// de chargement de fichiers par exemple.
 /// Bien sûr on ne veut pas que vos graphes soient construits
 /// "à la main" dans le code comme ça.
-void Graph::make_example()
+void Graph::make_example(std::string nom)
 {
     int nb_sommet, nb_arete, x, y, sommet1, sommet2, repro;
     double poids, val;
-    std::string bitmap, nom;
-    std::cout << "Rentrer le nom du graphe: ";
-    std::cin >> nom;
+    std::string bitmap;
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     std::ifstream fichier ( nom , std::ios::in);
     // La ligne précédente est en gros équivalente à :
@@ -331,10 +329,10 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_vertices[id_vert2].m_in.push_back(idx);
 }
 
-void Graph::sauvegarde()
+void Graph::sauvegarde(std::string save)
 {
     std::fstream fichier;
-    fichier.open( "test.txt" , std::ios::out | std::ios::trunc);
+    fichier.open( save , std::ios::out | std::ios::trunc);
     fichier << m_vertices.size() << std::endl << m_edges.size() << std::endl;
     for (std::map<int, Vertex>::iterator i=m_vertices.begin(); i!=m_vertices.end(); i++)
     {

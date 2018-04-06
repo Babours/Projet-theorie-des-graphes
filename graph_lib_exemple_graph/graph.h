@@ -329,14 +329,14 @@ class Graph
         /// Voir implémentation dans le .cpp
         /// Cette méthode est à enlever et remplacer par un système
         /// de chargement de fichiers par exemple.
-        void make_example();
+        void make_example(std::string graphe);
 
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
         void Supp_Vertex(int i);
         void Supp_Edge(int i);
-        void sauvegarde();
+        void sauvegarde(std::string save);
         void test_remove_edge(int i);
         void test_add_edge(int i, int j);
         void test_supp_edge(int i, int j);

@@ -1,0 +1,17 @@
+7
+8
+0 198 98 boa.jpg 3
+0 398 98 bonobo.jpg 2
+0 198 298 hippopotame.jpg 5
+6078.47 398 298 goeland.png 2
+0 598 298 gazelle.jpg 2
+0 98 498 leopard.jpg 1
+0 298 498 fou_de_bassan.jpg 1
+1 2 1
+0 1 3
+1 3 1
+4 1 2
+6 3 2
+3 4 0
+2 0 1
+5 2 3
