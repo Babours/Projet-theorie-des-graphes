@@ -258,6 +258,7 @@ class WidgetButton : public Widget
 {
     protected :
         bool m_value = false;
+        bool m_dej_active = false;
 
     public :
 
@@ -266,7 +267,9 @@ class WidgetButton : public Widget
 
         bool clicked() { bool clk = m_value; m_value=false; return clk; }
         bool get_value() { return m_value; }
+        bool get_dej_active() {return m_dej_active;}
         void set_value(bool value) { m_value = value; }
+        void set_dej_active (bool value) {m_dej_active = value;}
 };
 
 
@@ -338,6 +341,10 @@ class WidgetImage : public Widget
         void set_animate_tempo(int tempo) { m_animate_tempo = tempo; }
 
         void set_pic_idx(int pic_idx) { m_pic_idx=pic_idx; }
+
+        std::string get_name() {return m_pic_name;}
+
+
 };
 
 

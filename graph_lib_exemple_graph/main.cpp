@@ -25,9 +25,10 @@ int main()
 
         /// Mise à jour générale (clavier/souris/buffer etc...)
         grman::mettre_a_jour();
+        rest(0);
     }
-
-    grman::fermer_allegro();
+    //g.test_remove_edge(1);
+    g.sauvegarde();
 
     return 0;
 }
