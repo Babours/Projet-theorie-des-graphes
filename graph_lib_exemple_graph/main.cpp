@@ -5,10 +5,9 @@
 
 int main()
 {
-    //JE OJIHGOISRTGBHETYv uit'(t'yut'('y('
     /// A appeler en 1er avant d'instancier des objets graphiques etc...
     grman::init();
-
+    // bla bla bla
     /// Le nom du répertoire où se trouvent les images à charger
     grman::set_pictures_path("pics");
 
