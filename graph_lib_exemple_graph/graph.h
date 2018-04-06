@@ -1,6 +1,7 @@
 #ifndef GRAPH_H_INCLUDED
 #define GRAPH_H_INCLUDED
 
+
 /**************************************************************
     Ici sont proposées 3 classes fondamentales
             Vertex (=Sommet)
@@ -114,6 +115,15 @@ class VertexInterface
         // Une boite pour le label précédent
         grman::WidgetText m_box_label_idx;
 
+        // Un bouton pour ajouter une arete
+        grman::WidgetButton m_add_edge;
+
+        // Un bouton pour supprimer un sommet
+        grman::WidgetButton m_supp_vertex;
+
+        //Un bouton pour supprimer une arete
+        grman::WidgetButton m_supp_edge;
+
     public :
 
         // Le constructeur met en place les éléments de l'interface
@@ -140,6 +150,8 @@ class Vertex
 
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_value;
+        int m_repro;
+        double m_k;
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<VertexInterface> m_interface = nullptr;
@@ -153,14 +165,21 @@ class Vertex
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
-        Vertex (double value=0, VertexInterface *interface=nullptr) :
-            m_value(value), m_interface(interface)  {  }
+        Vertex (double value=0, VertexInterface *interface=nullptr, int repro=0, double k=0) :
+            m_value(value), m_interface(interface), m_repro(repro)  {  }
 
         /// Vertex étant géré par Graph ce sera la méthode update de graph qui appellera
         /// le pre_update et post_update de Vertex (pas directement la boucle de jeu)
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+        double get_value() {return m_value;}
+        int get_repro() {return m_repro;}
+        double get_k() {return m_k;}
+        void set_value(double val) {m_value=val;}
+        void set_k(double k) {m_k=k;}
+        /*std::vector<int> get_in(int i) {return m_in[i];}
+        std::vector<int> get_out(int i) {return m_out[i];}*/
 };
 
 
@@ -235,6 +254,12 @@ class Edge
         /// Voir l'implémentation Graph::update dans le .cpp
         void pre_update();
         void post_update();
+        int get_from() {return m_from;}
+        int get_to() {return m_to;}
+        double get_weight() {return m_weight;}
+        void set_from(int i) {m_from=i;}
+        void set_to(int i) {m_to=i;}
+
 };
 
 
@@ -289,6 +314,7 @@ class Graph
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
 
+
     public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
@@ -296,7 +322,7 @@ class Graph
         Graph (GraphInterface *interface=nullptr) :
             m_interface(interface)  {  }
 
-        void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
+        void add_interfaced_vertex(int idx, double value, int x, int y, int repro, std::string pic_name="", int pic_idx=0);
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
@@ -308,7 +334,11 @@ class Graph
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+        void Supp_Vertex(int i);
+        void Supp_Edge(int i);
+        void sauvegarde();
+        void test_remove_edge(int i);
+        void test_add_edge(int i, int j);
+        void test_supp_edge(int i, int j);
 };
-
-
 #endif // GRAPH_H_INCLUDED
