@@ -76,6 +76,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <stack>
 
 #include "grman/grman.h"
 
@@ -152,8 +153,10 @@ class Vertex
 
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_value;
-        int m_repro;
+        double m_repro;
         double m_k;
+        bool m_marque;
+        bool m_passe;
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<VertexInterface> m_interface = nullptr;
@@ -167,7 +170,7 @@ class Vertex
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
-        Vertex (double value=0, VertexInterface *interface=nullptr, int repro=0, double k=0) :
+        Vertex (double value=0, VertexInterface *interface=nullptr, double repro=0, double k=0, bool m_marque=false, bool m_passe=false) :
             m_value(value), m_interface(interface), m_repro(repro)  {  }
 
         /// Vertex étant géré par Graph ce sera la méthode update de graph qui appellera
@@ -176,12 +179,14 @@ class Vertex
         void pre_update();
         void post_update();
         double get_value() {return m_value;}
-        int get_repro() {return m_repro;}
+        double get_repro() {return m_repro;}
         double get_k() {return m_k;}
+        bool get_mark() {return m_marque;}
+        bool get_passe() {return m_passe;}
         void set_value(double val) {m_value=val;}
         void set_k(double k) {m_k=k;}
-        /*std::vector<int> get_in(int i) {return m_in[i];}
-        std::vector<int> get_out(int i) {return m_out[i];}*/
+        void set_mark (bool t) {m_marque=t;}
+        void set_passe (bool f) {m_passe=f;}
 };
 
 
@@ -239,6 +244,7 @@ class Edge
 
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
         double m_weight;
+        bool m_marque;
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<EdgeInterface> m_interface = nullptr;
@@ -259,8 +265,10 @@ class Edge
         int get_from() {return m_from;}
         int get_to() {return m_to;}
         double get_weight() {return m_weight;}
+        bool get_mark() {return m_marque;}
         void set_from(int i) {m_from=i;}
         void set_to(int i) {m_to=i;}
+        void set_mark(bool t) {m_marque=t;}
 
 };
 
@@ -290,8 +298,9 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
-        /// un bouton pour créer un sommet
+        /// deux boutons pour activer le mode dynamique et les composantes fortement connexes
         grman::WidgetButton m_add_vertex;
+        grman::WidgetButton m_bouton_rouge;
 
         /// bouton abeille
         grman::WidgetButton m_bouton_abeille;
@@ -477,6 +486,10 @@ class Graph
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<GraphInterface> m_interface = nullptr;
 
+        std::vector<Edge> m_chemin;
+        std::stack<int> m_sommets;
+        bool m_t;
+
 
 
     public:
@@ -486,7 +499,7 @@ class Graph
         Graph (GraphInterface *interface=nullptr) :
             m_interface(interface)  {  }
 
-        void add_interfaced_vertex(int idx, double value, int x, int y, int repro, std::string pic_name="", int pic_idx=0);
+        void add_interfaced_vertex(int idx, double value, int x, int y, double repro, std::string pic_name="", int pic_idx=0);
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
         void test_add_vertex(std::string image);
 
@@ -505,5 +518,12 @@ class Graph
         void test_remove_edge(int i);
         void test_add_edge(int i, int j);
         void test_supp_edge(int i, int j);
+        void comp_fort(int i);
+        void chemin (int idx);
+        void afficher();
+        void reboot();
+        void set_t(bool i) {m_t=i;}
+        bool get_t() {return m_t;}
+
 };
 #endif // GRAPH_H_INCLUDED

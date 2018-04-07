@@ -21,6 +21,8 @@ int main()
 /// Un exemple de graphe2
     Graph g2;
 
+    Graph g3;
+
         while ( !key[KEY_Q] )
     {
      num_graph = menu();
@@ -54,11 +56,23 @@ while ( !key[KEY_ESC] )
         g2.sauvegarde(graphe);
     }
 
+    if (num_graph == 3)
+    {
+    graphe="graphe3.txt";
+    g3.make_example(graphe);
+while ( !key[KEY_ESC] )
+        {
+            /// Il faut appeler les méthodes d'update des objets qui comportent des widgets
+            g3.update();
 
-    //grman::fermer_allegro();
-
+            /// Mise à jour générale (clavier/souris/buffer etc...)
+            grman::mettre_a_jour();
+        }
+        g3.sauvegarde(graphe);
     }
 
+    }
+    grman::fermer_allegro();
     return 0;
 }
 END_OF_MAIN();

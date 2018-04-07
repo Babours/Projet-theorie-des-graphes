@@ -37,7 +37,7 @@ int menu()
     bool graphe1 = false, graphe2 = false, graphe3 = false;
     BITMAP*fond_d_ecran; // il faut coller l'image sur une autre page pour eviter les erreurs de compilation
     BITMAP*menu; // Pour coller l'image par dessu
-    BITMAP*menu1;// menu 1
+    //BITMAP*menu1;// menu 1
     grman::init(); // on réinitialise
 
     fond_d_ecran = create_bitmap(SCREEN_W, SCREEN_H); // Pour que l'image de fond prenne la totalite de l'écran
@@ -128,5 +128,6 @@ if(mouse_b&1 && mouse_x > 215 && mouse_x < 590 && mouse_y > 305 && mouse_y < 340
     return 3;
 }
 }
-
+    return 0;
 }
+

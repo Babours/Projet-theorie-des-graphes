@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 #include <queue>
+#include <vector>
+#include <stack>
 
 /***************************************************
                     VERTEX
@@ -112,7 +114,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 
     // Le slider de réglage de valeur
     m_box_edge.add_child( m_slider_weight );
-    m_slider_weight.set_range(0.0 , 100.0); // Valeurs arbitraires, à adapter...
+    m_slider_weight.set_range(0.0 , 10.0); // Valeurs arbitraires, à adapter...
     m_slider_weight.set_dim(16,40);
     m_slider_weight.set_gravity_y(grman::GravityY::Up);
 
@@ -172,26 +174,28 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     /// afficher bouton bleu
     m_top_box.add_child(m_add_vertex);
     m_add_vertex.set_bg_color(BLEU);
-    m_add_vertex.set_dim(60,40);
-    m_add_vertex.set_pos(900,70);
+    m_add_vertex.set_dim(10,10);
+    m_add_vertex.set_pos(890,308);
+
+    /// afficher bouton rouge
+    m_top_box.add_child(m_bouton_rouge);
+    m_bouton_rouge.set_bg_color(ROUGE);
+    m_bouton_rouge.set_dim(10,10);
+    m_bouton_rouge.set_pos(863,308);
 
      /// afficher bouton abeille
     m_top_box.add_child(m_bouton_abeille);
     m_bouton_abeille.set_dim(40,40);
-    m_bouton_abeille.set_pos(290,505);
+    m_bouton_abeille.set_pos(863,325);
     m_bouton_abeille.add_child(m_bouton_abeille_image);
-    //m_bouton_abeille_image.set_pic_name("abeille.jpg");
-   // m_bouton_abeille_image.set_dim(40,40);
     m_bouton_abeille.add_child(m_abeille);
     m_abeille.set_message("Abeil");
 
     /// afficher bouton aigle_royal
     m_top_box.add_child(m_bouton_aigle_royal);
     m_bouton_aigle_royal.set_dim(40,40);
-    m_bouton_aigle_royal.set_pos(335,505);
+    m_bouton_aigle_royal.set_pos(863,370);
     m_bouton_aigle_royal.add_child(m_bouton_aigle_royal_image);
-   // m_bouton_aigle_royal_image.set_pic_name("aigle_royal.jpg");
-    //m_bouton_aigle_royal_image.set_dim(40,40);
     m_bouton_aigle_royal.add_child(m_aigle_royal);
     m_aigle_royal.set_message("Aigle");
 
@@ -199,300 +203,240 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     /// afficher bouton boa
     m_top_box.add_child(m_bouton_boa);
     m_bouton_boa.set_dim(40,40);
-    m_bouton_boa.set_pos(380,505);
+    m_bouton_boa.set_pos(863,415);
     m_bouton_boa.add_child(m_bouton_boa_image);
-    //m_bouton_boa_image.set_pic_name("boa.jpg");
-    //m_bouton_boa_image.set_dim(40,40);
     m_bouton_boa.add_child(m_boa);
     m_boa.set_message("Boa");
 
     /// afficher bouton bonobo
     m_top_box.add_child(m_bouton_bonobo);
     m_bouton_bonobo.set_dim(40,40);
-    m_bouton_bonobo.set_pos(425,505);
+    m_bouton_bonobo.set_pos(863,460);
     m_bouton_bonobo.add_child(m_bouton_bonobo_image);
-    //m_bouton_bonobo_image.set_pic_name("bonobo.jpg");
-   // m_bouton_bonobo_image.set_dim(40,40);
-     m_bouton_bonobo.add_child(m_bonobo);
+    m_bouton_bonobo.add_child(m_bonobo);
     m_bonobo.set_message("Bonob");
 
     /// afficher bouton cerisier
     m_top_box.add_child(m_bouton_cerisier);
     m_bouton_cerisier.set_dim(40,40);
-    m_bouton_cerisier.set_pos(470,505);
+    m_bouton_cerisier.set_pos(863,505);
     m_bouton_cerisier.add_child(m_bouton_cerisier_image);
-    //m_bouton_cerisier_image.set_pic_name("cerisier.jpg");
-   // m_bouton_cerisier_image.set_dim(40,40);
     m_bouton_cerisier.add_child(m_cerisier);
     m_cerisier.set_message("Ceris");
 
     /// afficher bouton cocotier
     m_top_box.add_child(m_bouton_cocotier);
     m_bouton_cocotier.set_dim(40,40);
-    m_bouton_cocotier.set_pos(515,505);
+    m_bouton_cocotier.set_pos(863,550);
     m_bouton_cocotier.add_child(m_bouton_cocotier_image);
-    //m_bouton_cocotier_image.set_pic_name("cocotier.jpg");
-   // m_bouton_cocotier_image.set_dim(40,40);
     m_bouton_cocotier.add_child(m_cocotier);
     m_cocotier.set_message("Coco");
 
     /// afficher bouton cormoran
     m_top_box.add_child(m_bouton_cormoran);
     m_bouton_cormoran.set_dim(40,40);
-    m_bouton_cormoran.set_pos(560,505);
+    m_bouton_cormoran.set_pos(908,10);
     m_bouton_cormoran.add_child(m_bouton_cormoran_image);
-    //m_bouton_cormoran_image.set_pic_name("cormoran.jpg");
-   // m_bouton_cormoran_image.set_dim(40,40);
     m_bouton_cormoran.add_child(m_cormoran);
     m_cormoran.set_message("Cormo");
 
     /// afficher bouton crevette
     m_top_box.add_child(m_bouton_crevette);
     m_bouton_crevette.set_dim(40,40);
-    m_bouton_crevette.set_pos(605,505);
+    m_bouton_crevette.set_pos(908,55);
     m_bouton_crevette.add_child(m_bouton_crevette_image);
-    //m_bouton_crevette_image.set_pic_name("crevette.jpg");
-    //m_bouton_crevette_image.set_dim(40,40);
     m_bouton_crevette.add_child(m_crevette);
     m_crevette.set_message("Crevet");
 
     /// afficher bouton crocodile
     m_top_box.add_child(m_bouton_crocodile);
     m_bouton_crocodile.set_dim(40,40);
-    m_bouton_crocodile.set_pos(650,505);
+    m_bouton_crocodile.set_pos(908,100);
     m_bouton_crocodile.add_child(m_bouton_crocodile_image);
-    //m_bouton_crocodile_image.set_pic_name("crocodile.jpg");
-   // m_bouton_crocodile_image.set_dim(40,40);
     m_bouton_crocodile.add_child(m_crocodile);
     m_crocodile.set_message("Croco");
 
     /// afficher bouton dauphin
     m_top_box.add_child(m_bouton_dauphin);
     m_bouton_dauphin.set_dim(40,40);
-    m_bouton_dauphin.set_pos(695,505);
+    m_bouton_dauphin.set_pos(908,145);
     m_bouton_dauphin.add_child(m_bouton_dauphin_image);
-    //m_bouton_dauphin_image.set_pic_name("dauphin.jpg");
-    //m_bouton_dauphin_image.set_dim(40,40);
     m_bouton_dauphin.add_child(m_dauphin);
     m_dauphin.set_message("Dauph");
 
     /// afficher bouton dorade
     m_top_box.add_child(m_bouton_dorade);
     m_bouton_dorade.set_dim(40,40);
-    m_bouton_dorade.set_pos(740,505);
+    m_bouton_dorade.set_pos(908,190);
     m_bouton_dorade.add_child(m_bouton_dorade_image);
-   // m_bouton_dorade_image.set_pic_name("dorade.jpg");
-    //m_bouton_dorade_image.set_dim(40,40);
     m_bouton_dorade.add_child(m_dorade);
     m_dorade.set_message("Dorad");
 
     /// afficher bouton fissurelle
     m_top_box.add_child(m_bouton_fissurelle);
     m_bouton_fissurelle.set_dim(40,40);
-    m_bouton_fissurelle.set_pos(785,505);
+    m_bouton_fissurelle.set_pos(908,235);
     m_bouton_fissurelle.add_child(m_bouton_fissurelle_image);
-    //m_bouton_fissurelle_image.set_pic_name("fissurelle.jpg");
-   // m_bouton_fissurelle_image.set_dim(40,40);
     m_bouton_fissurelle.add_child(m_fissurelle);
     m_fissurelle.set_message("Fissu");
 
     /// afficher bouton flamand_rose
     m_top_box.add_child(m_bouton_flamand_rose);
     m_bouton_flamand_rose.set_dim(40,40);
-    m_bouton_flamand_rose.set_pos(830,505);
+    m_bouton_flamand_rose.set_pos(908,280);
     m_bouton_flamand_rose.add_child(m_bouton_flamand_rose_image);
-   // m_bouton_flamand_rose_image.set_pic_name("flamand_rose.jpg");
-   // m_bouton_flamand_rose_image.set_dim(40,40);
     m_bouton_flamand_rose.add_child(m_flamand_rose);
     m_flamand_rose.set_message("FlmdR");
 
     /// afficher bouton fou_de_bassan
     m_top_box.add_child(m_bouton_fou_de_bassan);
     m_bouton_fou_de_bassan.set_dim(40,40);
-    m_bouton_fou_de_bassan.set_pos(875,505);
+    m_bouton_fou_de_bassan.set_pos(908,325);
     m_bouton_fou_de_bassan.add_child(m_bouton_fou_de_bassan_image);
-    //m_bouton_fou_de_bassan_image.set_pic_name("fou_de_bassan.jpg");
-   // m_bouton_fou_de_bassan_image.set_dim(40,40);
     m_bouton_fou_de_bassan.add_child(m_fou_de_bassan);
     m_fou_de_bassan.set_message("fouDB");
 
     /// afficher bouton fourmie
     m_top_box.add_child(m_bouton_fourmie);
     m_bouton_fourmie.set_dim(40,40);
-    m_bouton_fourmie.set_pos(920,505);
+    m_bouton_fourmie.set_pos(908,370);
     m_bouton_fourmie.add_child(m_bouton_fourmie_image);
-    //m_bouton_fourmie_image.set_pic_name("fourmie.jpg");
-   // m_bouton_fourmie_image.set_dim(40,40);
     m_bouton_fourmie.add_child(m_fourmie);
     m_fourmie.set_message("Fourm");
 
     /// afficher bouton frelon
     m_top_box.add_child(m_bouton_frelon);
     m_bouton_frelon.set_dim(40,40);
-    m_bouton_frelon.set_pos(200,550);
+    m_bouton_frelon.set_pos(908,415);
     m_bouton_frelon.add_child(m_bouton_frelon_image);
-   // m_bouton_frelon_image.set_pic_name("frelon.jpg");
-    //m_bouton_frelon_image.set_dim(40,40);
     m_bouton_frelon.add_child(m_frelon);
     m_frelon.set_message("Frelo");
 
     /// afficher bouton gazelle
     m_top_box.add_child(m_bouton_gazelle);
     m_bouton_gazelle.set_dim(40,40);
-    m_bouton_gazelle.set_pos(245,550);
+    m_bouton_gazelle.set_pos(908,460);
     m_bouton_gazelle.add_child(m_bouton_gazelle_image);
-    //m_bouton_gazelle_image.set_pic_name("gazelle.jpg");
-    //m_bouton_gazelle_image.set_dim(40,40);
     m_bouton_gazelle.add_child(m_gazelle);
     m_gazelle.set_message("Gazel");
 
     /// afficher bouton goeland_argente
     m_top_box.add_child(m_bouton_goeland_argente);
     m_bouton_goeland_argente.set_dim(40,40);
-    m_bouton_goeland_argente.set_pos(290,550);
+    m_bouton_goeland_argente.set_pos(908,505);
     m_bouton_goeland_argente.add_child(m_bouton_goeland_argente_image);
-    //m_bouton_goeland_argente_image.set_pic_name("goeland_argente.jpg");
-   // m_bouton_goeland_argente_image.set_dim(40,40);
     m_bouton_goeland_argente.add_child(m_goeland_argente);
     m_goeland_argente.set_message("Goela");
 
     /// afficher bouton hippopotame
     m_top_box.add_child(m_bouton_hippopotame);
     m_bouton_hippopotame.set_dim(40,40);
-    m_bouton_hippopotame.set_pos(335,550);
+    m_bouton_hippopotame.set_pos(908,550);
     m_bouton_hippopotame.add_child(m_bouton_hippopotame_image);
-    //m_bouton_hippopotame_image.set_pic_name("hippopotame.jpg");
-    //m_bouton_hippopotame_image.set_dim(40,40);
     m_bouton_hippopotame.add_child(m_hippopotame);
     m_hippopotame.set_message("Hippo");
 
     /// afficher bouton lapin
     m_top_box.add_child(m_bouton_lapin);
     m_bouton_lapin.set_dim(40,40);
-    m_bouton_lapin.set_pos(380,550);
+    m_bouton_lapin.set_pos(953,10);
     m_bouton_lapin.add_child(m_bouton_lapin_image);
-    //m_bouton_lapin_image.set_pic_name("lapin.jpg");
-    //m_bouton_lapin_image.set_dim(40,40);
     m_bouton_lapin.add_child(m_lapin);
     m_lapin.set_message("Lapin");
 
     /// afficher bouton leopard
     m_top_box.add_child(m_bouton_leopard);
     m_bouton_leopard.set_dim(40,40);
-    m_bouton_leopard.set_pos(425,550);
+    m_bouton_leopard.set_pos(953,55);
     m_bouton_leopard.add_child(m_bouton_leopard_image);
-   // m_bouton_leopard_image.set_pic_name("leopard.jpg");
-   // m_bouton_leopard_image.set_dim(40,40);
     m_bouton_leopard.add_child(m_leopard);
     m_leopard.set_message("Leopa");
 
     /// afficher bouton lion
     m_top_box.add_child(m_bouton_lion);
     m_bouton_lion.set_dim(40,40);
-    m_bouton_lion.set_pos(470,550);
+    m_bouton_lion.set_pos(953,100);
     m_bouton_lion.add_child(m_bouton_lion_image);
-    //m_bouton_lion_image.set_pic_name("lion.jpg");
-    //m_bouton_lion_image.set_dim(40,40);
     m_bouton_lion.add_child(m_lion);
     m_lion.set_message("Lion");
 
     /// afficher bouton maquereau
     m_top_box.add_child(m_bouton_maquereau);
     m_bouton_maquereau.set_dim(40,40);
-    m_bouton_maquereau.set_pos(515,550);
+    m_bouton_maquereau.set_pos(953,145);
     m_bouton_maquereau.add_child(m_bouton_maquereau_image);
-   // m_bouton_maquereau_image.set_pic_name("maquereau.jpg");
-    //m_bouton_maquereau_image.set_dim(40,40);
     m_bouton_maquereau.add_child(m_maquereau);
     m_maquereau.set_message("Maque");
 
     /// afficher bouton mulot
     m_top_box.add_child(m_bouton_mulot);
     m_bouton_mulot.set_dim(40,40);
-    m_bouton_mulot.set_pos(560,550);
+    m_bouton_mulot.set_pos(953,190);
     m_bouton_mulot.add_child(m_bouton_mulot_image);
-   // m_bouton_mulot_image.set_pic_name("mulot.jpg");
-   // m_bouton_mulot_image.set_dim(40,40);
     m_bouton_mulot.add_child((m_mulot));
     m_mulot.set_message("Mulot");
 
     /// afficher bouton ormeau
     m_top_box.add_child(m_bouton_ormeau);
     m_bouton_ormeau.set_dim(40,40);
-    m_bouton_ormeau.set_pos(605,550);
+    m_bouton_ormeau.set_pos(953,235);
     m_bouton_ormeau.add_child(m_bouton_ormeau_image);
-    //m_bouton_ormeau_image.set_pic_name("ormeau.jpg");
-   // m_bouton_ormeau_image.set_dim(40,40);
-   m_bouton_ormeau.add_child(m_ormeau);
+    m_bouton_ormeau.add_child(m_ormeau);
     m_ormeau.set_message("Ormea");
 
     /// afficher bouton ours
     m_top_box.add_child(m_bouton_ours);
     m_bouton_ours.set_dim(40,40);
-    m_bouton_ours.set_pos(650,550);
+    m_bouton_ours.set_pos(953,280);
     m_bouton_ours.add_child(m_bouton_ours_image);
-   // m_bouton_ours_image.set_pic_name("ours.jpg");
-   // m_bouton_ours_image.set_dim(40,40);
     m_bouton_ours.add_child(m_ours);
     m_ours.set_message("Ours");
 
     /// afficher bouton pissenlit
     m_top_box.add_child(m_bouton_pissenlit);
     m_bouton_pissenlit.set_dim(40,40);
-    m_bouton_pissenlit.set_pos(695,550);
+    m_bouton_pissenlit.set_pos(953,325);
     m_bouton_pissenlit.add_child(m_bouton_pissenlit_image);
-   // m_bouton_pissenlit_image.set_pic_name("pissenlit.jpg");
-   // m_bouton_pissenlit_image.set_dim(40,40);
     m_bouton_pissenlit.add_child(m_pissenlit);
     m_pissenlit.set_message("pisse");
 
     /// afficher bouton poule
     m_top_box.add_child(m_bouton_poule);
     m_bouton_poule.set_dim(40,40);
-    m_bouton_poule.set_pos(740,550);
+    m_bouton_poule.set_pos(953,370);
     m_bouton_poule.add_child(m_bouton_poule_image);
-   // m_bouton_poule_image.set_pic_name("poule.jpg");
-    //m_bouton_poule_image.set_dim(40,40);
     m_bouton_poule.add_child(m_poule);
     m_poule.set_message("Poule");
 
     /// afficher bouton renard
     m_top_box.add_child(m_bouton_renard);
     m_bouton_renard.set_dim(40,40);
-    m_bouton_renard.set_pos(785,550);
+    m_bouton_renard.set_pos(953,415);
     m_bouton_renard.add_child(m_bouton_renard_image);
-   // m_bouton_renard_image.set_pic_name("renard.jpg");
-    //m_bouton_renard_image.set_dim(40,40);
     m_bouton_renard.add_child(m_renard);
     m_renard.set_message("Renar");
 
     /// afficher bouton saumon
     m_top_box.add_child(m_bouton_saumon);
     m_bouton_saumon.set_dim(40,40);
-    m_bouton_saumon.set_pos(830,550);
+    m_bouton_saumon.set_pos(953,460);
     m_bouton_saumon.add_child(m_bouton_saumon_image);
-   // m_bouton_saumon_image.set_pic_name("saumon.jpg");
-    //m_bouton_saumon_image.set_dim(40,40);
     m_bouton_saumon.add_child(m_saumon);
     m_saumon.set_message("Saumo");
 
     /// afficher bouton tilleul
     m_top_box.add_child(m_bouton_tilleul);
     m_bouton_tilleul.set_dim(40,40);
-    m_bouton_tilleul.set_pos(875,550);
+    m_bouton_tilleul.set_pos(953,505);
     m_bouton_tilleul.add_child(m_bouton_tilleul_image);
-    //m_bouton_tilleul_image.set_pic_name("tilleul.jpg");
-    //m_bouton_tilleul_image.set_dim(40,40);
     m_bouton_tilleul.add_child(m_tilleul);
     m_tilleul.set_message("Tille");
 
     /// afficher bouton vipere
     m_top_box.add_child(m_bouton_vipere);
     m_bouton_vipere.set_dim(40,40);
-    m_bouton_vipere.set_pos(920,550);
+    m_bouton_vipere.set_pos(953,550);
     m_bouton_vipere.add_child(m_bouton_vipere_image);
-   // m_bouton_vipere_image.set_pic_name("vipere.jpg");
-    //m_bouton_vipere_image.set_dim(40,40);
     m_bouton_vipere.add_child(m_vipere);
     m_vipere.set_message("Viper");
 }
@@ -505,8 +449,8 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 /// "à la main" dans le code comme ça.
 void Graph::make_example(std::string nom)
 {
-    int nb_sommet, nb_arete, x, y, sommet1, sommet2, repro;
-    double poids, val;
+    int nb_sommet, nb_arete, x, y, sommet1, sommet2;
+    double poids, val, repro;
     std::string bitmap;
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
     std::ifstream fichier ( nom , std::ios::in);
@@ -552,10 +496,7 @@ void Graph::update()
     for (auto &elt : m_vertices)
     {
         elt.second.post_update();
-        if(elt.second.m_interface->m_supp_vertex.clicked())
-        {
-            Supp_Vertex(elt.first);
-        }
+
         if(elt.second.m_interface->m_add_edge.clicked() )
         {
             elt.second.m_interface->m_add_edge.set_dej_active(true);
@@ -569,6 +510,48 @@ void Graph::update()
                 }
             }
         }
+
+        if(m_interface->m_add_vertex.get_dej_active())
+        {
+            for (auto &id : m_vertices)
+            {
+                for (unsigned int i=0; i<id.second.m_in.size(); i++)
+                {
+                    id.second.set_k(id.second.get_k()+((m_edges[id.second.m_in[i]].get_weight())*(m_vertices[m_edges[id.second.m_in[i]].get_from()].get_value())));
+                }
+            }
+            for (auto &id : m_vertices)
+            {
+                j=0.0;
+                for (unsigned int i=0; i<id.second.m_out.size(); i++)
+                {
+                    j=j+((m_edges[id.second.m_out[i]].get_weight())*(m_vertices[m_edges[id.second.m_out[i]].get_to()].get_value()));
+                }
+                file_j.push(j);
+            }
+            for (auto &id : m_vertices)
+            {
+                id.second.set_value((id.second.get_value())+((id.second.get_repro())*(id.second.get_value())*(1.0-((id.second.get_value())/(id.second.get_k()))))-(0.001*file_j.front()));
+                if(id.second.get_value()<0)
+                {
+                    id.second.set_value(0);
+                }
+                file_j.pop();
+            }
+
+        }
+    }
+    for(auto &elt: m_vertices)
+    {
+        if(elt.second.m_interface->m_supp_vertex.clicked())
+        {
+            Supp_Vertex(elt.first);
+            break;
+        }
+    }
+
+    for(auto &elt: m_vertices)
+    {
         if(elt.second.m_interface->m_supp_edge.clicked() )
         {
             elt.second.m_interface->m_supp_edge.set_dej_active(true);
@@ -582,36 +565,8 @@ void Graph::update()
                 }
             }
         }
-        ///if(bouton_bleu)
-        {
-            for (auto &id : m_vertices)
-            {
-                for (int i=0; i<id.second.m_in.size(); i++)
-                {
-                    id.second.set_k(id.second.get_k()+((m_edges[id.second.m_in[i]].get_weight())*(m_vertices[m_edges[id.second.m_in[i]].get_from()].get_value())));
-                }
-            }
-            for (auto &id : m_vertices)
-            {
-                j=0.0;
-                for (int i=0; i<id.second.m_out.size(); i++)
-                {
-                    j=j+((m_edges[id.second.m_out[i]].get_weight())*(m_vertices[m_edges[id.second.m_out[i]].get_to()].get_value()));
-                }
-                file_j.push(j);
-            }
-            for (auto &id : m_vertices)
-            {
-                id.second.set_value((id.second.get_value())+((id.second.get_repro())*(id.second.get_value())*(1.0-((id.second.get_value())/(id.second.get_k()))))-(file_j.front()));
-                if(id.second.get_value()<0)
-                {
-                    id.second.set_value(0);
-                }
-                file_j.pop();
-            }
-
-        }
     }
+
 
     for (auto &elt : m_edges)
         elt.second.post_update();
@@ -625,6 +580,14 @@ void Graph::update()
                 m_interface->m_add_vertex.set_dej_active(false);
         }
 
+        if ((m_interface->m_bouton_rouge.clicked())&& (m_interface->m_bouton_rouge.get_dej_active()==false))
+    {
+        rest(500);
+        comp_fort(0);
+        m_interface->m_bouton_rouge.set_dej_active(true);
+    }
+
+
         ///rajouter sommet abeille
         if(m_interface->m_bouton_abeille.get_dej_active()==true)
         {
@@ -637,7 +600,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_abeille.clicked())&&(m_interface->m_bouton_abeille.get_dej_active()==false))
         {
-                m_interface->m_bouton_abeille.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_abeille.set_dej_active(true);
         }
 
         ///rajouter sommet aigle royal
@@ -652,7 +616,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_aigle_royal.clicked())&&(m_interface->m_bouton_aigle_royal.get_dej_active()==false))
         {
-                m_interface->m_bouton_aigle_royal.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_aigle_royal.set_dej_active(true);
         }
 
 
@@ -668,7 +633,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_boa.clicked())&&(m_interface->m_bouton_boa.get_dej_active()==false))
         {
-                m_interface->m_bouton_boa.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_boa.set_dej_active(true);
         }
 
         ///rajouter sommet bonobo
@@ -683,7 +649,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_bonobo.clicked())&&(m_interface->m_bouton_bonobo.get_dej_active()==false))
         {
-                m_interface->m_bouton_bonobo.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_bonobo.set_dej_active(true);
         }
 
         ///rajouter sommet cerisier
@@ -698,7 +665,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_cerisier.clicked())&&(m_interface->m_bouton_cerisier.get_dej_active()==false))
         {
-                m_interface->m_bouton_cerisier.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_cerisier.set_dej_active(true);
         }
 
         ///rajouter sommet cocotier
@@ -713,7 +681,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_cocotier.clicked())&&(m_interface->m_bouton_cocotier.get_dej_active()==false))
         {
-                m_interface->m_bouton_cocotier.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_cocotier.set_dej_active(true);
         }
 
         ///rajouter sommet cormoran
@@ -728,7 +697,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_cormoran.clicked())&&(m_interface->m_bouton_cormoran.get_dej_active()==false))
         {
-                m_interface->m_bouton_cormoran.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_cormoran.set_dej_active(true);
         }
 
         ///rajouter sommet crevette
@@ -743,7 +713,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_crevette.clicked())&&(m_interface->m_bouton_crevette.get_dej_active()==false))
         {
-                m_interface->m_bouton_crevette.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_crevette.set_dej_active(true);
         }
 
          ///rajouter sommet crocodile
@@ -758,7 +729,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_crocodile.clicked())&&(m_interface->m_bouton_crocodile.get_dej_active()==false))
         {
-                m_interface->m_bouton_crocodile.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_crocodile.set_dej_active(true);
         }
 
         ///rajouter sommet dauphin
@@ -773,7 +745,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_dauphin.clicked())&&(m_interface->m_bouton_dauphin.get_dej_active()==false))
         {
-                m_interface->m_bouton_dauphin.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_dauphin.set_dej_active(true);
         }
 
         ///rajouter sommet dorade
@@ -788,7 +761,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_dorade.clicked())&&(m_interface->m_bouton_dorade.get_dej_active()==false))
         {
-                m_interface->m_bouton_dorade.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_dorade.set_dej_active(true);
         }
 
         ///rajouter sommet fissurelle
@@ -803,7 +777,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_fissurelle.clicked())&&(m_interface->m_bouton_fissurelle.get_dej_active()==false))
         {
-                m_interface->m_bouton_fissurelle.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_fissurelle.set_dej_active(true);
         }
 
         ///rajouter sommet flamand rose
@@ -818,7 +793,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_flamand_rose.clicked())&&(m_interface->m_bouton_flamand_rose.get_dej_active()==false))
         {
-                m_interface->m_bouton_flamand_rose.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_flamand_rose.set_dej_active(true);
         }
 
         ///rajouter sommet fou de bassan
@@ -833,7 +809,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_fou_de_bassan.clicked())&&(m_interface->m_bouton_fou_de_bassan.get_dej_active()==false))
         {
-                m_interface->m_bouton_fou_de_bassan.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_fou_de_bassan.set_dej_active(true);
         }
 
         ///rajouter sommet fourmie
@@ -848,7 +825,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_fourmie.clicked())&&(m_interface->m_bouton_fourmie.get_dej_active()==false))
         {
-                m_interface->m_bouton_fourmie.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_fourmie.set_dej_active(true);
         }
 
 
@@ -864,7 +842,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_frelon.clicked())&&(m_interface->m_bouton_frelon.get_dej_active()==false))
         {
-                m_interface->m_bouton_frelon.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_frelon.set_dej_active(true);
         }
 
         ///rajouter sommet gazelle
@@ -879,7 +858,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_gazelle.clicked())&&(m_interface->m_bouton_gazelle.get_dej_active()==false))
         {
-                m_interface->m_bouton_gazelle.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_gazelle.set_dej_active(true);
         }
 
         ///rajouter sommet goeland argente
@@ -894,7 +874,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_goeland_argente.clicked())&&(m_interface->m_bouton_goeland_argente.get_dej_active()==false))
         {
-                m_interface->m_bouton_goeland_argente.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_goeland_argente.set_dej_active(true);
         }
 
         ///rajouter sommet hippopotame
@@ -909,7 +890,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_hippopotame.clicked())&&(m_interface->m_bouton_hippopotame.get_dej_active()==false))
         {
-                m_interface->m_bouton_hippopotame.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_hippopotame.set_dej_active(true);
         }
 
         ///rajouter sommet lapin
@@ -924,7 +906,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_lapin.clicked())&&(m_interface->m_bouton_lapin.get_dej_active()==false))
         {
-                m_interface->m_bouton_lapin.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_lapin.set_dej_active(true);
         }
 
         ///rajouter sommet leopard
@@ -939,7 +922,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_leopard.clicked())&&(m_interface->m_bouton_leopard.get_dej_active()==false))
         {
-                m_interface->m_bouton_leopard.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_leopard.set_dej_active(true);
         }
 
         ///rajouter sommet lion
@@ -954,7 +938,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_lion.clicked())&&(m_interface->m_bouton_lion.get_dej_active()==false))
         {
-                m_interface->m_bouton_lion.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_lion.set_dej_active(true);
         }
 
         ///rajouter sommet maquereau
@@ -969,7 +954,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_maquereau.clicked())&&(m_interface->m_bouton_maquereau.get_dej_active()==false))
         {
-                m_interface->m_bouton_maquereau.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_maquereau.set_dej_active(true);
         }
 
         ///rajouter sommet mulot
@@ -984,7 +970,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_mulot.clicked())&&(m_interface->m_bouton_mulot.get_dej_active()==false))
         {
-                m_interface->m_bouton_mulot.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_mulot.set_dej_active(true);
         }
 
         ///rajouter sommet ours
@@ -999,7 +986,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_ours.clicked())&&(m_interface->m_bouton_ours.get_dej_active()==false))
         {
-                m_interface->m_bouton_ours.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_ours.set_dej_active(true);
         }
 
         ///rajouter sommet ormeau
@@ -1014,7 +1002,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_ormeau.clicked())&&(m_interface->m_bouton_ormeau.get_dej_active()==false))
         {
-                m_interface->m_bouton_ormeau.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_ormeau.set_dej_active(true);
         }
 
         ///rajouter sommet pissenlit
@@ -1029,7 +1018,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_pissenlit.clicked())&&(m_interface->m_bouton_pissenlit.get_dej_active()==false))
         {
-                m_interface->m_bouton_pissenlit.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_pissenlit.set_dej_active(true);
         }
 
         ///rajouter sommet poule
@@ -1044,7 +1034,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_poule.clicked())&&(m_interface->m_bouton_poule.get_dej_active()==false))
         {
-                m_interface->m_bouton_poule.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_poule.set_dej_active(true);
         }
 
         ///rajouter sommet renard
@@ -1059,7 +1050,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_renard.clicked())&&(m_interface->m_bouton_renard.get_dej_active()==false))
         {
-                m_interface->m_bouton_renard.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_renard.set_dej_active(true);
         }
 
         ///rajouter sommet saumon
@@ -1074,7 +1066,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_saumon.clicked())&&(m_interface->m_bouton_saumon.get_dej_active()==false))
         {
-                m_interface->m_bouton_saumon.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_saumon.set_dej_active(true);
         }
 
         ///rajouter sommet tilleul
@@ -1089,7 +1082,8 @@ void Graph::update()
         }
         if((m_interface->m_bouton_tilleul.clicked())&&(m_interface->m_bouton_tilleul.get_dej_active()==false))
         {
-                m_interface->m_bouton_tilleul.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_tilleul.set_dej_active(true);
         }
 
         ///rajouter sommet vipere
@@ -1104,13 +1098,14 @@ void Graph::update()
         }
         if((m_interface->m_bouton_vipere.clicked())&&(m_interface->m_bouton_vipere.get_dej_active()==false))
         {
-                m_interface->m_bouton_vipere.set_dej_active(true);
+            rest(300);
+            m_interface->m_bouton_vipere.set_dej_active(true);
         }
 
 }
 
 /// Aide à l'ajout de sommets interfacés
-void Graph::add_interfaced_vertex(int idx, double value, int x, int y, int repro, std::string pic_name, int pic_idx)
+void Graph::add_interfaced_vertex(int idx, double value, int x, int y, double repro, std::string pic_name, int pic_idx)
 {
     if ( m_vertices.find(idx)!=m_vertices.end() )
     {
@@ -1323,4 +1318,104 @@ void Graph::test_add_vertex(std::string bitmap)
         }
     }
     add_interfaced_vertex(select[0]+1, 0.0, mouse_x, mouse_y, 1, bitmap);
+}
+
+void Graph::comp_fort(int i)
+{
+        m_vertices[i].set_mark(true);
+        m_sommets.push(i);
+        chemin(m_sommets.top());
+}
+
+void Graph::chemin(int idx)
+{
+    int k=0;
+    int c;
+    for (unsigned int i=0; i<m_vertices[idx].m_out.size(); i++)
+    {
+        if(m_edges[m_vertices[idx].m_out[i]].get_mark()==false)
+        {
+            if(m_edges[m_vertices[idx].m_out[i]].get_to()==m_sommets.top())
+            {
+                m_chemin.push_back(m_edges[m_vertices[idx].m_out[i]]);
+                afficher();
+            }
+            if((m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size()!=0)&&(m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].get_passe()==false))
+            {
+                for(unsigned int j=0; j<m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size(); j++)
+                {
+                    if (m_edges[m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out[j]].get_mark()==false)
+                    {
+                        k=1;
+                    }
+                }
+                if(k==1)
+                    {
+                        m_edges[m_vertices[idx].m_out[i]].set_mark(true);
+                        m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].set_passe(true);
+                        m_chemin.push_back(m_edges[m_vertices[idx].m_out[i]]);
+                        chemin(m_edges[m_vertices[idx].m_out[i]].get_to());
+                    }
+                k=0;
+            }
+            else
+            {
+                m_edges[m_vertices[idx].m_out[i]].set_mark(true);
+                m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].set_passe(true);
+            }
+        }
+    }
+    k=m_chemin[m_chemin.size()-1].get_from();
+    m_chemin.pop_back();
+    if(m_chemin.size()==0)
+    {
+        c=0;
+        for(unsigned int w=0; w<m_vertices[k].m_out.size(); w++)
+        {
+            if (m_edges[m_vertices[k].m_out[w]].get_mark()==false)
+                c=1;
+        }
+        if(c==0)
+        {
+           comp_fort(m_sommets.top()+1);
+        }
+    }
+    chemin(k);
+}
+
+void Graph::afficher()
+{
+    int j=0;
+    for(unsigned int i=0; i<m_chemin.size(); i++)
+    {
+        std::cout << "(" << m_chemin[i].get_from() << ";" << m_chemin[i].get_to() << ")";
+    }
+    std::cout << std::endl;
+    reboot();
+    for (unsigned int i=0; i<m_vertices.size(); i++)
+    {
+        if(m_vertices[i].get_mark()==false)
+            j=1;
+    }
+    if(j==1)
+    {
+        comp_fort(m_sommets.top()+1);
+    }
+}
+
+void Graph::reboot()
+{
+    for(unsigned int i=0; i<m_edges.size(); i++)
+    {
+        m_edges[i].set_mark(false);
+    }
+    for(unsigned int i=0; i<m_vertices.size(); i++)
+    {
+        m_vertices[i].set_passe(false);
+    }
+    for(unsigned int i=0; i<m_chemin.size(); i++)
+    {
+        m_chemin.pop_back();
+    }
+    m_chemin.pop_back();
 }

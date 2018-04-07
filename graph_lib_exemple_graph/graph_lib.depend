@@ -198,3 +198,78 @@
 	<memory>
 	<queue>
 
+1523111644 source:c:\informatique\info\mattis code\graph.cpp
+	"graph.h"
+	<iostream>
+	<fstream>
+	<map>
+	<string>
+	<memory>
+	<queue>
+	<vector>
+	<stack>
+
+1523110305 c:\informatique\info\mattis code\graph.h
+	<vector>
+	<map>
+	<string>
+	<memory>
+	<stack>
+	"grman/grman.h"
+
+1523030634 c:\informatique\info\mattis code\grman\grman.h
+	<allegro.h>
+	<string>
+	"grman_couleurs.h"
+	"coords.h"
+	"widget.h"
+
+1523029269 c:\informatique\info\mattis code\grman\grman_couleurs.h
+
+1523030634 c:\informatique\info\mattis code\grman\coords.h
+	<cmath>
+
+1523030992 c:\informatique\info\mattis code\grman\widget.h
+	"grman.h"
+	<iostream>
+	<string>
+	<vector>
+	<algorithm>
+	<allegro.h>
+
+1523030290 source:c:\informatique\info\mattis code\grman\coords.cpp
+	"coords.h"
+
+1523089500 source:c:\informatique\info\mattis code\grman\grman.cpp
+	<cmath>
+	<unordered_map>
+	<unordered_set>
+	<utility>
+	<string>
+	<iostream>
+	<regex>
+	"grman.h"
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+
+1523030992 source:c:\informatique\info\mattis code\grman\widget.cpp
+	"widget.h"
+
+1523110417 source:c:\informatique\info\mattis code\menu.cpp
+	<allegro.h>
+	<stdio.h>
+	<stdlib.h>
+	"graph.h"
+	"menu.h"
+
+1523086755 c:\informatique\info\mattis code\menu.h
+
+1523107419 source:c:\informatique\info\mattis code\main.cpp
+	"grman/grman.h"
+	<iostream>
+	<string>
+	"graph.h"
+	"menu.h"
+
