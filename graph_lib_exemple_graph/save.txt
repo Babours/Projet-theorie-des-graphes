@@ -1,0 +1,39 @@
+15
+22
+100.0 127 189 abeille.jpg 1
+100.0 195 7 frelon.jpg 1
+100.0 378 10 ours.jpg 0.1
+100.0 118 366 pissenlit.jpg 1
+100.0 357 167 lapin.jpg 1
+100.0 524 8 crevette.jpg 1
+100.0 530 193 saumon.jpg 1
+100.0 685 6 aigle_royal.jpg 1
+100.0 445 319 cerisier.jpg 1
+100.0 666 196 renard.jpg 1
+100.0 261 470 fourmie.jpg 1
+100.0 449 475 tilleul.jpg 1
+100.0 287 325 mulot.jpg 1
+100.0 597 491 vipere.jpg 1
+100.0 623 331 poule.jpg 1
+0 1 0
+1 2 0
+3 4 0
+0 2 0
+3 0 0
+3 2 0
+5 6 0
+6 2 0
+4 7 0
+6 7 0
+8 2 0
+9 7 0
+8 9 0
+3 10 0
+8 10 0
+11 10 0
+3 12 0
+12 7 0
+12 9 0
+12 13 0
+14 9 0
+13 14 0

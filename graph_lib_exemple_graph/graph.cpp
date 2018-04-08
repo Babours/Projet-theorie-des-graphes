@@ -19,10 +19,11 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
     m_top_box.set_pos(x, y);
     m_top_box.set_dim(130, 115);
     m_top_box.set_moveable();
+    m_top_box.set_bg_color(CYANCLAIR);
 
     // Le slider de réglage de valeur
     m_top_box.add_child( m_slider_value );
-    m_slider_value.set_range(0.0 , 10000.0); // Valeurs arbitraires, à adapter...
+    m_slider_value.set_range(0.0, 1000.0);  // Valeurs arbitraires, à adapter...
     m_slider_value.set_dim(15,75);
     m_slider_value.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Center);
 
@@ -50,7 +51,7 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
         m_top_box.add_child( m_img );
         m_img.set_pic_name(pic_name);
         m_img.set_pic_idx(pic_idx);
-        m_img.set_gravity_xy(grman::GravityX::Right , grman::GravityY::Down);
+        m_img.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Down);
     }
 
     // Label de visualisation d'index du sommet dans une boite
@@ -114,7 +115,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 
     // Le slider de réglage de valeur
     m_box_edge.add_child( m_slider_weight );
-    m_slider_weight.set_range(0.0 , 10.0); // Valeurs arbitraires, à adapter...
+    m_slider_weight.set_range(0.0, 10.0);  // Valeurs arbitraires, à adapter...
     m_slider_weight.set_dim(16,40);
     m_slider_weight.set_gravity_y(grman::GravityY::Up);
 
@@ -183,7 +184,7 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_bouton_rouge.set_dim(10,10);
     m_bouton_rouge.set_pos(863,308);
 
-     /// afficher bouton abeille
+    /// afficher bouton abeille
     m_top_box.add_child(m_bouton_abeille);
     m_bouton_abeille.set_dim(40,40);
     m_bouton_abeille.set_pos(863,325);
@@ -453,12 +454,13 @@ void Graph::make_example(std::string nom)
     double poids, val, repro;
     std::string bitmap;
     m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
-    std::ifstream fichier ( nom , std::ios::in);
+    std::ifstream fichier ( nom, std::ios::in);
     // La ligne précédente est en gros équivalente à :
     // m_interface = new GraphInterface(50, 0, 750, 600);
+    // On lit les 2 premières lignes du fichier qui correspondent à notre nombre de sommets et à notre nombre d'arcs
     fichier >> nb_sommet >> nb_arete;
     /// Les sommets doivent être définis avant les arcs
-    // Ajouter le sommet d'indice 0 de valeur 30 en x=200 et y=100 avec l'image clown1.jpg etc...
+    // On lit les sommets 1 par 1 et on vient inscrire les informations une à une dans nos variables qui serviront à créer le sommet
     for (int i=0; i<nb_sommet; i++)
     {
         fichier >> val >> x >> y >> bitmap >> repro;
@@ -466,7 +468,7 @@ void Graph::make_example(std::string nom)
     }
 
     /// Les arcs doivent être définis entre des sommets qui existent !
-    // AJouter l'arc d'indice 0, allant du sommet 1 au sommet 2 de poids 50 etc...
+    // On lit les arcs 1 à 1 et on vient inscrire les informations dans nos variables qui serviront à créer l'arc
     for (int i=0; i<nb_arete; i++)
     {
         fichier >> sommet1 >> sommet2 >> poids;
@@ -496,55 +498,77 @@ void Graph::update()
     for (auto &elt : m_vertices)
     {
         elt.second.post_update();
-
+        /// Si on a cliqué sur le bouton pour ajouter un arc
         if(elt.second.m_interface->m_add_edge.clicked() )
         {
+            /// On enregistre la fait que notre bouton soit activé
             elt.second.m_interface->m_add_edge.set_dej_active(true);
             for (auto &id : m_vertices)
             {
+                /// Si on a dans notre graphe un bouton qui a cette variable dej_active également activé (et qu'on ne s'agit pas de notre premier sommet)
                 if((id.second.m_interface->m_add_edge.get_dej_active()) && (id.first!=elt.first))
                 {
+                    ///On appelle la fonction pour créer un arc et on réinitialise nos 2 boutons
                     test_add_edge(id.first, elt.first);
                     elt.second.m_interface->m_add_edge.set_dej_active(false);
                     id.second.m_interface->m_add_edge.set_dej_active(false);
                 }
             }
         }
-
-        if(m_interface->m_add_vertex.get_dej_active())
+    }
+    /// On regarde si le bouton bleu est activé
+    if(m_interface->m_add_vertex.get_dej_active())
+    {
+        /// Si il est activé alors pour chaque sommet
+        for (auto &id : m_vertices)
         {
-            for (auto &id : m_vertices)
+            ///On définit le K de ce sommet
+            for (unsigned int i=0; i<id.second.m_in.size(); i++)
             {
-                for (unsigned int i=0; i<id.second.m_in.size(); i++)
-                {
-                    id.second.set_k(id.second.get_k()+((m_edges[id.second.m_in[i]].get_weight())*(m_vertices[m_edges[id.second.m_in[i]].get_from()].get_value())));
-                }
+                id.second.set_k(id.second.get_k()+((m_edges[id.second.m_in[i]].get_weight())*(m_vertices[m_edges[id.second.m_in[i]].get_from()].get_value())));
             }
-            for (auto &id : m_vertices)
+            /// On fait en sorte que le K ne soit jamais nul
+            if(id.second.get_k()<id.second.get_value())
             {
-                j=0.0;
-                for (unsigned int i=0; i<id.second.m_out.size(); i++)
-                {
-                    j=j+((m_edges[id.second.m_out[i]].get_weight())*(m_vertices[m_edges[id.second.m_out[i]].get_to()].get_value()));
-                }
-                file_j.push(j);
+                id.second.set_k(id.second.get_value()*1.001);
             }
-            for (auto &id : m_vertices)
-            {
-                id.second.set_value((id.second.get_value())+((id.second.get_repro())*(id.second.get_value())*(1.0-((id.second.get_value())/(id.second.get_k()))))-(0.001*file_j.front()));
-                if(id.second.get_value()<0)
-                {
-                    id.second.set_value(0);
-                }
-                file_j.pop();
-            }
-
         }
+        /// Ensuite pour chaque sommet de nouveau
+        for (auto &id : m_vertices)
+        {
+            j=0.0;
+            /// On détermine le nombre d'animaux qui vont le manger et en quelle quantité
+            for (unsigned int i=0; i<id.second.m_out.size(); i++)
+            {
+                j=j+((m_edges[id.second.m_out[i]].get_weight())*(m_vertices[m_edges[id.second.m_out[i]].get_to()].get_value()));
+            }
+            /// On stocke ça dans une file
+            file_j.push(j);
+        }
+        /// Et enfin pour chaque sommet
+        for (auto &id : m_vertices)
+        {
+            /// On rafraichit le nombre de membres par sommet
+            id.second.set_value((id.second.get_value())+((id.second.get_repro())*(id.second.get_value())*(1.0-((id.second.get_value())/(id.second.get_k()))))-(0.1*file_j.front()));
+            /// On fait en sorte que ce nombre ne soit pas négatif
+            if(id.second.get_value()<0)
+            {
+                id.second.set_value(0);
+            }
+            if(id.second.get_value()>1000)
+            {
+                id.second.set_value(1000);
+            }
+            file_j.pop();
+        }
+        rest(100);
     }
     for(auto &elt: m_vertices)
     {
+        /// Si un bouton pour supprimer est activé
         if(elt.second.m_interface->m_supp_vertex.clicked())
         {
+            ///Alonrs on appelle la fonction pour supprimer un sommet
             Supp_Vertex(elt.first);
             break;
         }
@@ -552,13 +576,17 @@ void Graph::update()
 
     for(auto &elt: m_vertices)
     {
+        /// Si le bouton pour supprimer un arc est activé
         if(elt.second.m_interface->m_supp_edge.clicked() )
         {
+            /// On enregistre le fait que le bouton aie été activé
             elt.second.m_interface->m_supp_edge.set_dej_active(true);
             for (auto &id : m_vertices)
             {
+                /// Si on autre bouton que celui du premier arc a été activé
                 if((id.second.m_interface->m_supp_edge.get_dej_active()) && (id.first!=elt.first))
                 {
+                    /// On appelle la fonction pour supprimer une arête et on réinitialise les valeurs des 2 boutons
                     test_supp_edge(id.first, elt.first);
                     elt.second.m_interface->m_supp_edge.set_dej_active(false);
                     id.second.m_interface->m_supp_edge.set_dej_active(false);
@@ -570,537 +598,542 @@ void Graph::update()
 
     for (auto &elt : m_edges)
         elt.second.post_update();
-
-        if((m_interface->m_add_vertex.clicked())&&(m_interface->m_add_vertex.get_dej_active()==false))
-        {
-                m_interface->m_add_vertex.set_dej_active(true);
-        }
-        if((m_interface->m_add_vertex.clicked())&&(m_interface->m_add_vertex.get_dej_active()==true))
-        {
-                m_interface->m_add_vertex.set_dej_active(false);
-        }
-
-        if ((m_interface->m_bouton_rouge.clicked())&& (m_interface->m_bouton_rouge.get_dej_active()==false))
+    /// Si le bouton bleu a été cliqué alors qu'il n'était pas activé
+    if((m_interface->m_add_vertex.clicked())&&(m_interface->m_add_vertex.get_dej_active()==false))
     {
+        /// On l'active
+        m_interface->m_add_vertex.set_dej_active(true);
+    }
+    /// Si le bouton bleu a été cliqué alors qu'il était déjà activé
+    if((m_interface->m_add_vertex.clicked())&&(m_interface->m_add_vertex.get_dej_active()==true))
+    {
+        /// On le désactive
+        m_interface->m_add_vertex.set_dej_active(false);
+    }
+
+    /// Si on appuie sur le bouton rouge
+    if ((m_interface->m_bouton_rouge.clicked())&& (m_interface->m_bouton_rouge.get_dej_active()==false))
+    {
+        /// On appelle la fonction des composantes fortement connexes
         rest(500);
         comp_fort(0);
         m_interface->m_bouton_rouge.set_dej_active(true);
     }
 
 
-        ///rajouter sommet abeille
-        if(m_interface->m_bouton_abeille.get_dej_active()==true)
+    ///rajouter sommet abeille
+    if(m_interface->m_bouton_abeille.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="abeille.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_abeille.set_dej_active(false);
-            }
+            bitmap="abeille.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_abeille.set_dej_active(false);
         }
-        if((m_interface->m_bouton_abeille.clicked())&&(m_interface->m_bouton_abeille.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_abeille.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_abeille.clicked())&&(m_interface->m_bouton_abeille.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_abeille.set_dej_active(true);
+    }
 
-        ///rajouter sommet aigle royal
-        if(m_interface->m_bouton_aigle_royal.get_dej_active()==true)
+    ///rajouter sommet aigle royal
+    if(m_interface->m_bouton_aigle_royal.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="aigle_royal.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_aigle_royal.set_dej_active(false);
-            }
+            bitmap="aigle_royal.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_aigle_royal.set_dej_active(false);
         }
-        if((m_interface->m_bouton_aigle_royal.clicked())&&(m_interface->m_bouton_aigle_royal.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_aigle_royal.set_dej_active(true);
-        }
-
-
-        ///rajouter sommet boa
-        if(m_interface->m_bouton_boa.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="boa.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_boa.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_boa.clicked())&&(m_interface->m_bouton_boa.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_boa.set_dej_active(true);
-        }
-
-        ///rajouter sommet bonobo
-        if(m_interface->m_bouton_bonobo.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="bonobo.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_bonobo.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_bonobo.clicked())&&(m_interface->m_bouton_bonobo.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_bonobo.set_dej_active(true);
-        }
-
-        ///rajouter sommet cerisier
-        if(m_interface->m_bouton_cerisier.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="cerisier.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_cerisier.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_cerisier.clicked())&&(m_interface->m_bouton_cerisier.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_cerisier.set_dej_active(true);
-        }
-
-        ///rajouter sommet cocotier
-        if(m_interface->m_bouton_cocotier.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="cocotier.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_cocotier.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_cocotier.clicked())&&(m_interface->m_bouton_cocotier.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_cocotier.set_dej_active(true);
-        }
-
-        ///rajouter sommet cormoran
-        if(m_interface->m_bouton_cormoran.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="cormoran.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_cormoran.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_cormoran.clicked())&&(m_interface->m_bouton_cormoran.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_cormoran.set_dej_active(true);
-        }
-
-        ///rajouter sommet crevette
-        if(m_interface->m_bouton_crevette.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="crevette.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_crevette.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_crevette.clicked())&&(m_interface->m_bouton_crevette.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_crevette.set_dej_active(true);
-        }
-
-         ///rajouter sommet crocodile
-        if(m_interface->m_bouton_crocodile.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="crocodile.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_crocodile.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_crocodile.clicked())&&(m_interface->m_bouton_crocodile.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_crocodile.set_dej_active(true);
-        }
-
-        ///rajouter sommet dauphin
-        if(m_interface->m_bouton_dauphin.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="dauphin.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_dauphin.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_dauphin.clicked())&&(m_interface->m_bouton_dauphin.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_dauphin.set_dej_active(true);
-        }
-
-        ///rajouter sommet dorade
-        if(m_interface->m_bouton_dorade.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="dorade.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_dorade.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_dorade.clicked())&&(m_interface->m_bouton_dorade.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_dorade.set_dej_active(true);
-        }
-
-        ///rajouter sommet fissurelle
-        if(m_interface->m_bouton_fissurelle.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="fissurelle.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_fissurelle.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_fissurelle.clicked())&&(m_interface->m_bouton_fissurelle.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_fissurelle.set_dej_active(true);
-        }
-
-        ///rajouter sommet flamand rose
-        if(m_interface->m_bouton_flamand_rose.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="flamand_rose.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_flamand_rose.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_flamand_rose.clicked())&&(m_interface->m_bouton_flamand_rose.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_flamand_rose.set_dej_active(true);
-        }
-
-        ///rajouter sommet fou de bassan
-        if(m_interface->m_bouton_fou_de_bassan.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="fou_de_bassan.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_fou_de_bassan.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_fou_de_bassan.clicked())&&(m_interface->m_bouton_fou_de_bassan.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_fou_de_bassan.set_dej_active(true);
-        }
-
-        ///rajouter sommet fourmie
-        if(m_interface->m_bouton_fourmie.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="fourmie.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_fourmie.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_fourmie.clicked())&&(m_interface->m_bouton_fourmie.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_fourmie.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_aigle_royal.clicked())&&(m_interface->m_bouton_aigle_royal.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_aigle_royal.set_dej_active(true);
+    }
 
 
-        ///rajouter sommet frelon
-        if(m_interface->m_bouton_frelon.get_dej_active()==true)
+    ///rajouter sommet boa
+    if(m_interface->m_bouton_boa.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="frelon.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_frelon.set_dej_active(false);
-            }
+            bitmap="boa.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_boa.set_dej_active(false);
         }
-        if((m_interface->m_bouton_frelon.clicked())&&(m_interface->m_bouton_frelon.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_frelon.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_boa.clicked())&&(m_interface->m_bouton_boa.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_boa.set_dej_active(true);
+    }
 
-        ///rajouter sommet gazelle
-        if(m_interface->m_bouton_gazelle.get_dej_active()==true)
+    ///rajouter sommet bonobo
+    if(m_interface->m_bouton_bonobo.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="gazelle.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_gazelle.set_dej_active(false);
-            }
+            bitmap="bonobo.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_bonobo.set_dej_active(false);
         }
-        if((m_interface->m_bouton_gazelle.clicked())&&(m_interface->m_bouton_gazelle.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_gazelle.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_bonobo.clicked())&&(m_interface->m_bouton_bonobo.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_bonobo.set_dej_active(true);
+    }
 
-        ///rajouter sommet goeland argente
-        if(m_interface->m_bouton_goeland_argente.get_dej_active()==true)
+    ///rajouter sommet cerisier
+    if(m_interface->m_bouton_cerisier.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="goeland_argente.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_goeland_argente.set_dej_active(false);
-            }
+            bitmap="cerisier.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_cerisier.set_dej_active(false);
         }
-        if((m_interface->m_bouton_goeland_argente.clicked())&&(m_interface->m_bouton_goeland_argente.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_goeland_argente.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_cerisier.clicked())&&(m_interface->m_bouton_cerisier.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_cerisier.set_dej_active(true);
+    }
 
-        ///rajouter sommet hippopotame
-        if(m_interface->m_bouton_hippopotame.get_dej_active()==true)
+    ///rajouter sommet cocotier
+    if(m_interface->m_bouton_cocotier.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="hippopotame.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_hippopotame.set_dej_active(false);
-            }
+            bitmap="cocotier.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_cocotier.set_dej_active(false);
         }
-        if((m_interface->m_bouton_hippopotame.clicked())&&(m_interface->m_bouton_hippopotame.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_hippopotame.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_cocotier.clicked())&&(m_interface->m_bouton_cocotier.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_cocotier.set_dej_active(true);
+    }
 
-        ///rajouter sommet lapin
-        if(m_interface->m_bouton_lapin.get_dej_active()==true)
+    ///rajouter sommet cormoran
+    if(m_interface->m_bouton_cormoran.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="lapin.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_lapin.set_dej_active(false);
-            }
+            bitmap="cormoran.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_cormoran.set_dej_active(false);
         }
-        if((m_interface->m_bouton_lapin.clicked())&&(m_interface->m_bouton_lapin.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_lapin.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_cormoran.clicked())&&(m_interface->m_bouton_cormoran.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_cormoran.set_dej_active(true);
+    }
 
-        ///rajouter sommet leopard
-        if(m_interface->m_bouton_leopard.get_dej_active()==true)
+    ///rajouter sommet crevette
+    if(m_interface->m_bouton_crevette.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="leopard.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_leopard.set_dej_active(false);
-            }
+            bitmap="crevette.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_crevette.set_dej_active(false);
         }
-        if((m_interface->m_bouton_leopard.clicked())&&(m_interface->m_bouton_leopard.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_leopard.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_crevette.clicked())&&(m_interface->m_bouton_crevette.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_crevette.set_dej_active(true);
+    }
 
-        ///rajouter sommet lion
-        if(m_interface->m_bouton_lion.get_dej_active()==true)
+    ///rajouter sommet crocodile
+    if(m_interface->m_bouton_crocodile.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="lion.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_lion.set_dej_active(false);
-            }
+            bitmap="crocodile.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_crocodile.set_dej_active(false);
         }
-        if((m_interface->m_bouton_lion.clicked())&&(m_interface->m_bouton_lion.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_lion.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_crocodile.clicked())&&(m_interface->m_bouton_crocodile.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_crocodile.set_dej_active(true);
+    }
 
-        ///rajouter sommet maquereau
-        if(m_interface->m_bouton_maquereau.get_dej_active()==true)
+    ///rajouter sommet dauphin
+    if(m_interface->m_bouton_dauphin.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="maquereau.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_maquereau.set_dej_active(false);
-            }
+            bitmap="dauphin.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_dauphin.set_dej_active(false);
         }
-        if((m_interface->m_bouton_maquereau.clicked())&&(m_interface->m_bouton_maquereau.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_maquereau.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_dauphin.clicked())&&(m_interface->m_bouton_dauphin.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_dauphin.set_dej_active(true);
+    }
 
-        ///rajouter sommet mulot
-        if(m_interface->m_bouton_mulot.get_dej_active()==true)
+    ///rajouter sommet dorade
+    if(m_interface->m_bouton_dorade.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="mulot.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_mulot.set_dej_active(false);
-            }
+            bitmap="dorade.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_dorade.set_dej_active(false);
         }
-        if((m_interface->m_bouton_mulot.clicked())&&(m_interface->m_bouton_mulot.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_mulot.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_dorade.clicked())&&(m_interface->m_bouton_dorade.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_dorade.set_dej_active(true);
+    }
 
-        ///rajouter sommet ours
-        if(m_interface->m_bouton_ours.get_dej_active()==true)
+    ///rajouter sommet fissurelle
+    if(m_interface->m_bouton_fissurelle.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="ours.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_ours.set_dej_active(false);
-            }
+            bitmap="fissurelle.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_fissurelle.set_dej_active(false);
         }
-        if((m_interface->m_bouton_ours.clicked())&&(m_interface->m_bouton_ours.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_ours.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_fissurelle.clicked())&&(m_interface->m_bouton_fissurelle.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_fissurelle.set_dej_active(true);
+    }
 
-        ///rajouter sommet ormeau
-        if(m_interface->m_bouton_ormeau.get_dej_active()==true)
+    ///rajouter sommet flamand rose
+    if(m_interface->m_bouton_flamand_rose.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="ormeau.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_ormeau.set_dej_active(false);
-            }
+            bitmap="flamand_rose.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_flamand_rose.set_dej_active(false);
         }
-        if((m_interface->m_bouton_ormeau.clicked())&&(m_interface->m_bouton_ormeau.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_ormeau.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_flamand_rose.clicked())&&(m_interface->m_bouton_flamand_rose.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_flamand_rose.set_dej_active(true);
+    }
 
-        ///rajouter sommet pissenlit
-        if(m_interface->m_bouton_pissenlit.get_dej_active()==true)
+    ///rajouter sommet fou de bassan
+    if(m_interface->m_bouton_fou_de_bassan.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="pissenlit.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_pissenlit.set_dej_active(false);
-            }
+            bitmap="fou_de_bassan.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_fou_de_bassan.set_dej_active(false);
         }
-        if((m_interface->m_bouton_pissenlit.clicked())&&(m_interface->m_bouton_pissenlit.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_pissenlit.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_fou_de_bassan.clicked())&&(m_interface->m_bouton_fou_de_bassan.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_fou_de_bassan.set_dej_active(true);
+    }
 
-        ///rajouter sommet poule
-        if(m_interface->m_bouton_poule.get_dej_active()==true)
+    ///rajouter sommet fourmie
+    if(m_interface->m_bouton_fourmie.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="poule.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_poule.set_dej_active(false);
-            }
+            bitmap="fourmie.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_fourmie.set_dej_active(false);
         }
-        if((m_interface->m_bouton_poule.clicked())&&(m_interface->m_bouton_poule.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_poule.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_fourmie.clicked())&&(m_interface->m_bouton_fourmie.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_fourmie.set_dej_active(true);
+    }
 
-        ///rajouter sommet renard
-        if(m_interface->m_bouton_renard.get_dej_active()==true)
-        {
-            if(mouse_b&1)
-            {
-                bitmap="renard.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_renard.set_dej_active(false);
-            }
-        }
-        if((m_interface->m_bouton_renard.clicked())&&(m_interface->m_bouton_renard.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_renard.set_dej_active(true);
-        }
 
-        ///rajouter sommet saumon
-        if(m_interface->m_bouton_saumon.get_dej_active()==true)
+    ///rajouter sommet frelon
+    if(m_interface->m_bouton_frelon.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="saumon.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_saumon.set_dej_active(false);
-            }
+            bitmap="frelon.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_frelon.set_dej_active(false);
         }
-        if((m_interface->m_bouton_saumon.clicked())&&(m_interface->m_bouton_saumon.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_saumon.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_frelon.clicked())&&(m_interface->m_bouton_frelon.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_frelon.set_dej_active(true);
+    }
 
-        ///rajouter sommet tilleul
-        if(m_interface->m_bouton_tilleul.get_dej_active()==true)
+    ///rajouter sommet gazelle
+    if(m_interface->m_bouton_gazelle.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="tilleul.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_tilleul.set_dej_active(false);
-            }
+            bitmap="gazelle.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_gazelle.set_dej_active(false);
         }
-        if((m_interface->m_bouton_tilleul.clicked())&&(m_interface->m_bouton_tilleul.get_dej_active()==false))
-        {
-            rest(300);
-            m_interface->m_bouton_tilleul.set_dej_active(true);
-        }
+    }
+    if((m_interface->m_bouton_gazelle.clicked())&&(m_interface->m_bouton_gazelle.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_gazelle.set_dej_active(true);
+    }
 
-        ///rajouter sommet vipere
-        if(m_interface->m_bouton_vipere.get_dej_active()==true)
+    ///rajouter sommet goeland argente
+    if(m_interface->m_bouton_goeland_argente.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            if(mouse_b&1)
-            {
-                bitmap="vipere.jpg";
-                test_add_vertex(bitmap);
-                m_interface->m_bouton_vipere.set_dej_active(false);
-            }
+            bitmap="goeland_argente.png";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_goeland_argente.set_dej_active(false);
         }
-        if((m_interface->m_bouton_vipere.clicked())&&(m_interface->m_bouton_vipere.get_dej_active()==false))
+    }
+    if((m_interface->m_bouton_goeland_argente.clicked())&&(m_interface->m_bouton_goeland_argente.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_goeland_argente.set_dej_active(true);
+    }
+
+    ///rajouter sommet hippopotame
+    if(m_interface->m_bouton_hippopotame.get_dej_active()==true)
+    {
+        if(mouse_b&1)
         {
-            rest(300);
-            m_interface->m_bouton_vipere.set_dej_active(true);
+            bitmap="hippopotame.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_hippopotame.set_dej_active(false);
         }
+    }
+    if((m_interface->m_bouton_hippopotame.clicked())&&(m_interface->m_bouton_hippopotame.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_hippopotame.set_dej_active(true);
+    }
+
+    ///rajouter sommet lapin
+    if(m_interface->m_bouton_lapin.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="lapin.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_lapin.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_lapin.clicked())&&(m_interface->m_bouton_lapin.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_lapin.set_dej_active(true);
+    }
+
+    ///rajouter sommet leopard
+    if(m_interface->m_bouton_leopard.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="leopard.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_leopard.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_leopard.clicked())&&(m_interface->m_bouton_leopard.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_leopard.set_dej_active(true);
+    }
+
+    ///rajouter sommet lion
+    if(m_interface->m_bouton_lion.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="lion.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_lion.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_lion.clicked())&&(m_interface->m_bouton_lion.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_lion.set_dej_active(true);
+    }
+
+    ///rajouter sommet maquereau
+    if(m_interface->m_bouton_maquereau.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="maquereau.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_maquereau.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_maquereau.clicked())&&(m_interface->m_bouton_maquereau.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_maquereau.set_dej_active(true);
+    }
+
+    ///rajouter sommet mulot
+    if(m_interface->m_bouton_mulot.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="mulot.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_mulot.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_mulot.clicked())&&(m_interface->m_bouton_mulot.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_mulot.set_dej_active(true);
+    }
+
+    ///rajouter sommet ours
+    if(m_interface->m_bouton_ours.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="ours.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_ours.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_ours.clicked())&&(m_interface->m_bouton_ours.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_ours.set_dej_active(true);
+    }
+
+    ///rajouter sommet ormeau
+    if(m_interface->m_bouton_ormeau.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="ormeau.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_ormeau.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_ormeau.clicked())&&(m_interface->m_bouton_ormeau.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_ormeau.set_dej_active(true);
+    }
+
+    ///rajouter sommet pissenlit
+    if(m_interface->m_bouton_pissenlit.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="pissenlit.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_pissenlit.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_pissenlit.clicked())&&(m_interface->m_bouton_pissenlit.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_pissenlit.set_dej_active(true);
+    }
+
+    ///rajouter sommet poule
+    if(m_interface->m_bouton_poule.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="poule.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_poule.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_poule.clicked())&&(m_interface->m_bouton_poule.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_poule.set_dej_active(true);
+    }
+
+    ///rajouter sommet renard
+    if(m_interface->m_bouton_renard.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="renard.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_renard.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_renard.clicked())&&(m_interface->m_bouton_renard.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_renard.set_dej_active(true);
+    }
+
+    ///rajouter sommet saumon
+    if(m_interface->m_bouton_saumon.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="saumon.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_saumon.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_saumon.clicked())&&(m_interface->m_bouton_saumon.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_saumon.set_dej_active(true);
+    }
+
+    ///rajouter sommet tilleul
+    if(m_interface->m_bouton_tilleul.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="tilleul.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_tilleul.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_tilleul.clicked())&&(m_interface->m_bouton_tilleul.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_tilleul.set_dej_active(true);
+    }
+
+    ///rajouter sommet vipere
+    if(m_interface->m_bouton_vipere.get_dej_active()==true)
+    {
+        if(mouse_b&1)
+        {
+            bitmap="vipere.jpg";
+            test_add_vertex(bitmap);
+            m_interface->m_bouton_vipere.set_dej_active(false);
+        }
+    }
+    if((m_interface->m_bouton_vipere.clicked())&&(m_interface->m_bouton_vipere.get_dej_active()==false))
+    {
+        rest(300);
+        m_interface->m_bouton_vipere.set_dej_active(true);
+    }
 
 }
 
@@ -1143,57 +1176,78 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_vertices[id_vert2].m_in.push_back(idx);
 }
 
+/// La fonction de sauvegarde
 void Graph::sauvegarde(std::string save)
 {
+    /// On ouvre le fichier texte en mode écriture et on efface tout son contenu précédent
     std::fstream fichier;
-    fichier.open( save , std::ios::out | std::ios::trunc);
+    fichier.open( save, std::ios::out | std::ios::trunc);
+    /// On prend notre nombre de sommets et d'arcs et on les inscrit dans le fichier
     fichier << m_vertices.size() << std::endl << m_edges.size() << std::endl;
+    /// Pour chaque sommet on inscrit ses informations dans le fichier
     for (std::map<int, Vertex>::iterator i=m_vertices.begin(); i!=m_vertices.end(); i++)
     {
         fichier << i->second.get_value() << " " << i->second.m_interface->m_top_box.get_posx() << " " << i->second.m_interface->m_top_box.get_posy() << " " << i->second.m_interface->m_img.get_name() << " " << i->second.get_repro() << std::endl;
     }
+    /// Pour chaque arc on inscrit ses informations dans le fichier
     for (std::map<int, Edge>::iterator it=m_edges.begin(); it!=m_edges.end(); it++)
     {
         fichier << it->second.get_from() << " " << it->second.get_to() << " " << it->second.get_weight() << std::endl;
 
     }
+    /// on ferme le fichier
     fichier.close();
 }
 
+/// Fonction pour supprimer un sommet
 void Graph::Supp_Vertex(int i)
 {
     for (auto &it : m_edges)
     {
+        /// On supprime tous les arcs du sommet
         if(it.second.get_from()==i||it.second.get_to()==i)
         {
             test_remove_edge(it.first);
         }
     }
-            //m_vertices.erase(i);
+    /// On retire le sommet de l'interface
+    m_vertices[i].m_interface->m_top_box.set_pos(1500, 2000);
 }
 
 
-
+/// Fonction pour ajouter un sommet
 void Graph::test_add_edge(int idx1, int idx2)
 {
-    std::vector<int> select;
-    for (std::map<int, Edge>::iterator it=m_edges.begin(); it!=m_edges.end(); it++)
+    /// On stocke tous les indices d'arc dans un vecteur
+    if(m_edges.size()>1)
     {
-        select.push_back(it->first);
-    }
-
-    for (unsigned int i=0; i<select.size(); i++)
-    {
-        for(unsigned int j=0; j<select.size(); j++)
+        std::vector<int> select;
+        for (std::map<int, Edge>::iterator it=m_edges.begin(); it!=m_edges.end(); it++)
         {
-            if(select[i]<select[j])
-            {
-                select[i]=select[j];
-            }
-            else {select[j]=select[i];}
+            select.push_back(it->first);
         }
+        ///On tire pour avoir le plus grand sommet
+        for (unsigned int i=0; i<select.size(); i++)
+        {
+            for(unsigned int j=0; j<select.size(); j++)
+            {
+                if(select[i]<select[j])
+                {
+                    select[i]=select[j];
+                }
+                else
+                {
+                    select[j]=select[i];
+                }
+            }
+        }
+        ///On appelle la création d'arc avec les données recues
+        add_interfaced_edge(select[0]+1, idx1, idx2, 0.0);
     }
-    add_interfaced_edge(select[0]+1, idx1, idx2, 0.0);
+    else
+    {
+        add_interfaced_edge(m_edges.size()+500, idx1, idx2, 0.0);
+    }
 }
 
 /// eidx index of edge to remove
@@ -1287,25 +1341,30 @@ void Graph::test_remove_edge(int eidx)
 
 }
 
+/// Fonction pour supprimer un arc
 void Graph::test_supp_edge (int i, int j)
 {
+    /// On cherche parmis tous les arcs le bon
     for (std::map<int, Edge>::iterator it=m_edges.begin(); it!=m_edges.end(); it++)
     {
         if((it->second.get_from()==i)&&(it->second.get_to()==j))
         {
+            /// on le supprime
             test_remove_edge(it->first);
         }
     }
 }
 
+/// Fonction pour ajouter un sommet
 void Graph::test_add_vertex(std::string bitmap)
 {
+    /// On entre tous les indices de sommets dans un vector
     std::vector<int> select;
     for (std::map<int, Vertex>::iterator it=m_vertices.begin(); it!=m_vertices.end(); it++)
     {
         select.push_back(it->first);
     }
-
+    /// On rie pour obtenir le plus grand
     for (unsigned int i=0; i<select.size(); i++)
     {
         for(unsigned int j=0; j<select.size(); j++)
@@ -1314,97 +1373,150 @@ void Graph::test_add_vertex(std::string bitmap)
             {
                 select[i]=select[j];
             }
-            else {select[j]=select[i];}
+            else
+            {
+                select[j]=select[i];
+            }
         }
     }
+    /// On appelle la fonction pour ajouter un sommet avec les données qu'on a reçu
     add_interfaced_vertex(select[0]+1, 0.0, mouse_x, mouse_y, 1, bitmap);
 }
 
+
+/// Fonction pour afficher les composantes fortement connexes
 void Graph::comp_fort(int i)
 {
+    if(m_vertices.count(i)>0)
+    {
+        /// On marque le sommet et on applique la fonction chemin() dessus
         m_vertices[i].set_mark(true);
         m_sommets.push(i);
         chemin(m_sommets.top());
+    }
 }
 
+/// Fonction chemin()
 void Graph::chemin(int idx)
 {
     int k=0;
     int c;
-    for (unsigned int i=0; i<m_vertices[idx].m_out.size(); i++)
+    unsigned int i=0;
+    /// Si le sommet a des arcs qui partent de lui
+    if (m_vertices[idx].m_out.size()>0)
     {
-        if(m_edges[m_vertices[idx].m_out[i]].get_mark()==false)
+        do
         {
-            if(m_edges[m_vertices[idx].m_out[i]].get_to()==m_sommets.top())
+            i++;
+        }while ((m_edges[m_vertices[idx].m_out[i]].get_mark()==true) && (i<m_vertices[idx].m_out.size()));
+        i=0;
+            /// Si l'arc n'est pas marqué
+            if(m_edges[m_vertices[idx].m_out[i]].get_mark()==false)
             {
-                m_chemin.push_back(m_edges[m_vertices[idx].m_out[i]]);
-                afficher();
-            }
-            if((m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size()!=0)&&(m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].get_passe()==false))
-            {
-                for(unsigned int j=0; j<m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size(); j++)
+                /// Si le sommet d'arrivée est notre sommet de départ
+                if(m_edges[m_vertices[idx].m_out[i]].get_to()==m_sommets.top())
                 {
-                    if (m_edges[m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out[j]].get_mark()==false)
-                    {
-                        k=1;
-                    }
+                    /// Alors on met l'arc dans notre vecteur et on appelle la fonction afficher
+                    m_chemin.push_back(m_edges[m_vertices[idx].m_out[i]]);
+                    afficher();
                 }
-                if(k==1)
+                /// Si le sommet d'arrivée possède des arcs qui partent de lui et qu'on est pas déjà passé dessus
+                if((m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size()!=0)&&(m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].get_passe()==false))
+                {
+                    /// Alors on parcours tous les arcs qui sortent de ce sommet
+                    for(unsigned int j=0; j<m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out.size(); j++)
                     {
+                        /// Si au moins l'un d'entre eux n'est pas marqué
+                        if (m_edges[m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].m_out[j]].get_mark()==false)
+                        {
+                            k=1;
+                        }
+                    }
+                    if(k==1)
+                    {
+                        /// Alors on marque l'arc
+                        /// On indique qu'on est passé sur le sommet
+                        /// On rentre l'arc dans le vecteur du chemin
+                        /// On appelle la fonction chemin pour le sommet suivant
                         m_edges[m_vertices[idx].m_out[i]].set_mark(true);
                         m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].set_passe(true);
                         m_chemin.push_back(m_edges[m_vertices[idx].m_out[i]]);
                         chemin(m_edges[m_vertices[idx].m_out[i]].get_to());
                     }
-                k=0;
+                    k=0;
+                }
+                else
+                {
+                    /// Sinon on marque l'arc et on précise qu'on est passé sur le sommet suivant
+                    m_edges[m_vertices[idx].m_out[i]].set_mark(true);
+                    m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].set_passe(true);
+                }
             }
-            else
+        ///On retire le dernier arc du vecteur
+        k=m_chemin[m_chemin.size()-1].get_from();
+        m_chemin.pop_back();
+        /// si le vecteur est vide
+        if(m_chemin.size()==0)
+        {
+            c=0;
+            /// on parcours tous les arcs du sommet initial
+            for(unsigned int w=0; w<m_vertices[k].m_out.size(); w++)
             {
-                m_edges[m_vertices[idx].m_out[i]].set_mark(true);
-                m_vertices[m_edges[m_vertices[idx].m_out[i]].get_to()].set_passe(true);
+                if (m_edges[m_vertices[k].m_out[w]].get_mark()==false)
+                    c=1;
+            }
+            /// Si tous les sommets sont marqués
+            if(c==0)
+            {
+                /// On appelle la fonction composantes connexes du sommet suivant
+                k=0;
+                comp_fort(idx+1);
             }
         }
+        /// Sinon on appelle la fonction chemin denouveau sur le sommet initial
+        k=0;
+        chemin(k);
     }
-    k=m_chemin[m_chemin.size()-1].get_from();
-    m_chemin.pop_back();
-    if(m_chemin.size()==0)
+    /// Si le sommet n'a pas d'arc qui partent de lui alors on appelle les composantes fortement connexes du sommet suivant
+    else
     {
-        c=0;
-        for(unsigned int w=0; w<m_vertices[k].m_out.size(); w++)
-        {
-            if (m_edges[m_vertices[k].m_out[w]].get_mark()==false)
-                c=1;
-        }
-        if(c==0)
-        {
-           comp_fort(m_sommets.top()+1);
-        }
+        comp_fort(idx+1);
     }
-    chemin(k);
 }
 
+/// Fonction afficher
 void Graph::afficher()
 {
     int j=0;
+    /// On parcours tous les arcs du vecteur
     for(unsigned int i=0; i<m_chemin.size(); i++)
     {
+        /// On met tous les sommets des arcs en orange et on affiche les arcs
+        m_vertices[m_chemin[i].get_from()].m_interface->m_top_box.set_bg_color(ORANGE);
         std::cout << "(" << m_chemin[i].get_from() << ";" << m_chemin[i].get_to() << ")";
     }
     std::cout << std::endl;
+    /// On appelle ensuite la fonction reboot()
     reboot();
+    /// On parcours tous les sommets
     for (unsigned int i=0; i<m_vertices.size(); i++)
     {
         if(m_vertices[i].get_mark()==false)
             j=1;
     }
+    /// Si au moins 1 sommet n'est pas marqué
     if(j==1)
     {
+        /// Alors on appelle la fonction composantes fortement connexes pour le sommet suivant
+        j=0;
         comp_fort(m_sommets.top()+1);
     }
 }
 
+/// Fonction reboot
 void Graph::reboot()
 {
+    /// On met toutes les arêtes non marquées et tout les sommets non passés et on vide notre vecteur chemin
     for(unsigned int i=0; i<m_edges.size(); i++)
     {
         m_edges[i].set_mark(false);

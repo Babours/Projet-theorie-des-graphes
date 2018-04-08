@@ -1,20 +1,39 @@
-8
-10
-0 188 88 boa.jpg 3
-0 467 24 bonobo.jpg 2
-0 188 288 hippopotame.jpg 5
-0 388 288 goeland.png 2
-0 661 100 gazelle.jpg 2
-0 88 488 leopard.jpg 1
-0 288 488 fou_de_bassan.jpg 1
-0 583 425 cormoran.jpg 3
-1 2 1
+15
+22
+100.0 127 189 abeille.jpg 1
+100.0 195 7 frelon.jpg 0.5
+100.0 378 10 ours.jpg 0.1
+200.0 118 366 pissenlit.jpg 5
+100.0 357 167 lapin.jpg 0.5
+100.0 524 8 crevette.jpg 1
+100.0 530 193 saumon.jpg 1
+100.0 685 6 aigle_royal.jpg 0.1
+100.0 445 319 cerisier.jpg 1
+100.0 666 196 renard.jpg 0.25
+100.0 261 470 fourmie.jpg 0.1
+100.0 449 475 tilleul.jpg 0.5
+100.0 287 325 mulot.jpg 1
+100.0 597 491 vipere.jpg 0.5
+100.0 623 331 poule.jpg 0.5
 0 1 3
-1 3 1
-4 1 2
-6 3 2
-7 3 1
-3 4 0
-2 0 1
-5 2 3
-3 7 2
+1 2 2
+3 4 2
+0 2 1
+3 0 3
+3 2 2
+5 6 3
+6 2 2
+4 7 3
+6 7 2
+8 2 3
+9 7 4
+8 9 4
+3 10 2
+8 10 3
+11 10 3
+3 12 1
+12 7 2
+12 9 3
+12 13 2
+14 9 3
+13 14 3

@@ -1,17 +1,23 @@
-7
-8
-0 196 96 boa.jpg 3
-0 396 96 bonobo.jpg 2
-0 196 296 hippopotame.jpg 5
-0 396 296 goeland.png 2
-0 596 296 gazelle.jpg 2
-0 96 496 leopard.jpg 1
-0 296 496 fou_de_bassan.jpg 1
-1 2 1
-0 1 3
-1 3 1
-4 1 2
-6 3 2
-3 4 0
-2 0 1
-5 2 3
+9
+12
+100.0 154 63 boa.jpg 0.5
+100.0 344 17 bonobo.jpg 1
+100.0 144 434 hippopotame.jpg 0.5
+100.0 555 10 cocotier.jpg 3
+100.0 517 254 gazelle.jpg 4
+100.0 328 350 crocodile.jpg 0.5
+100.0 670 153 flamand_rose.jpg 1
+100.0 137 256 leopard.jpg 0.2
+100.0 616 445 lion.jpg 0.1
+6 8 1.25
+6 7 1.875
+2 8 2.5
+4 8 1.5625
+5 2 1.5625
+4 5 1.25
+3 1 1.25
+4 1 1.25
+4 7 1.25
+7 0 1.25
+4 0 1.5625
+1 0 3.4375

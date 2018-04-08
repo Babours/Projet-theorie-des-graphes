@@ -97,8 +97,8 @@ int menu()
    textprintf_ex(menu, font, 0,139, makecol(255,255,255),-1,"______________________________________________________________________________________________________");
    textprintf_ex(menu, font, 0,140, makecol(255,0,0),-1,"______________________________________________________________________________________________________");
 
-   textprintf_ex(menu, font, 220,220, makecol(255,255,255),-1," [ 1 ]    A C C E D E R   A U  G R A P H E");
-   textprintf_ex(menu, font, 220,221, makecol(255,255,255),-1," [ 1 ]    A C C E D E R   A U  G R A P H E");
+   textprintf_ex(menu, font, 220,220, makecol(255,255,255),-1," [ 1 ]    A C C E D E R   A U  G R A P H E  E U R O P E");
+   textprintf_ex(menu, font, 220,221, makecol(255,255,255),-1," [ 1 ]    A C C E D E R   A U  G R A P H E  E U R O P E");
    textprintf_ex(menu, font, 220,270, makecol(255,255,255),-1," [ 2 ]    A C C E D E R   A U   G R A P H E  A F R I Q U E ");
    textprintf_ex(menu, font, 220,271, makecol(255,255,255),-1," [ 2 ]    A C C E D E R   A U   G R A P H E  A F R I Q U E ");
    textprintf_ex(menu, font, 220,320, makecol(255,255,255),-1," [ 3 ]    A C C E D E R   A U   G R A P H E  M A R R I N");
